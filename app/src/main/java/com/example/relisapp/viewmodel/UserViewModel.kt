@@ -16,13 +16,9 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
         repository = UserRepository(userDao)
     }
 
-    fun insertUser(user: User) = viewModelScope.launch {
-        repository.insertUser(user)
-    }
 
     suspend fun getUserByUsername(username: String) = repository.getUserByUsername(username)
 
     suspend fun getUserByEmail(email: String) = repository.getUserByEmail(email)
 
-    suspend fun getAllUsers() = repository.getAllUsers()
 }

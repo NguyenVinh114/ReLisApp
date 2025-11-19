@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "692906296912",
+    "project_id": "relis-app",
+    "storage_bucket": "relis-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:692906296912:android:3bd2b204113acec2373355",
+        "android_client_info": {
+          "package_name": "com.example.relisapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCFyOkSANfO3EpQXA_41iKOW_M09r-ZbJk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

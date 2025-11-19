@@ -16,15 +16,18 @@
         <!-- 👇 Đặt MainActivity làm màn hìn khởi dong -->
         <activity
             android:name=".MainActivity"
-            android:exported="true">
+            android:exported="true"/>
+
+
+        <!-- 👇 Login và Register vẫn giữ lại, ko cần intent-filter -->
+        <activity android:name=".ui.screens.StartActivity" android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <!-- 👇 Login và Register vẫn giữ lại, ko cần intent-filter -->
         <activity android:name=".ui.screens.LoginActivity" android:exported="true" />
+        <activity android:name=".ui.screens.VerificationActivity" android:exported="true" />
         <activity android:name=".ui.screens.RegisterActivity" android:exported="true" />
 
     </application>
