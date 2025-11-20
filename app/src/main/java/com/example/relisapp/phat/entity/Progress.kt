@@ -1,0 +1,23 @@
+package com.example.relisapp.phat.entity
+
+import androidx.room.Entity
+import androidx.room.ForeignKey
+
+@Entity(
+    primaryKeys = ["userId", "lessonId"],
+    foreignKeys = [
+        ForeignKey(entity = Users::class, parentColumns = ["userId"], childColumns = ["userId"], onDelete = ForeignKey.CASCADE),
+        ForeignKey(
+            entity = Lessons::class,
+            parentColumns = ["lessonId"],
+            childColumns = ["lessonId"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ]
+)
+data class Progress(
+    val userId: Int,
+    val lessonId: Int,
+    val progress: Int? = 0,
+    val lastStudied: String?
+)
