@@ -57,7 +57,7 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "relis_database" // tên database trong app
                 )
-                    .createFromAsset("DB_ReLis_V2.db") // file trong assets/
+                    .createFromAsset("DB_ReLis_V1.db") // file trong assets/
                     .fallbackToDestructiveMigration(true) // Room sẽ recreate DB nếu schema không khớp
                     .build()
                 INSTANCE = instance
