@@ -13,6 +13,9 @@ import com.example.relisapp.ui.listening.ListeningScreen
 import com.example.relisapp.ui.progress.ProgressScreen
 import com.example.relisapp.ui.search.SearchScreen
 import com.example.relisapp.ui.theme.ReLisAppTheme
+import com.example.relisapp.ui.screens.ProfileActivity
+import android.content.Intent
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,10 +29,16 @@ class MainActivity : ComponentActivity() {
                     "home" -> HomeScreen(
                         onListeningClick = { currentScreen.value = "listening" },
                         onReadingClick = { currentScreen.value = "reading" },
-                        onProgressClick = { currentScreen.value = "progress" },   // ✅ thêm Progress
+                        onProgressClick = { currentScreen.value = "progress" },
                         onSearchClick = { currentScreen.value = "search" },
-                        onFavoriteClick = { currentScreen.value = "favorite" }    // ✅ thêm Favorite
+                        onFavoriteClick = { currentScreen.value = "favorite" },
+                        onProfileClick = {
+                            startActivity(Intent(this, ProfileActivity::class.java))
+                        }
                     )
+
+
+
 
                     "listening" -> ListeningScreen(
                         onBack = { currentScreen.value = "home" }

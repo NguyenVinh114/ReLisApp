@@ -36,7 +36,6 @@ class UserRepository(private val userDao: UserDao) {
     }
 
 
-
     //Get user by phone number
     suspend fun getUserByPhone(phone: String): User? {
         return userDao.getUserByPhone(phone)
@@ -65,5 +64,12 @@ class UserRepository(private val userDao: UserDao) {
         userDao.updateAvatar(userId, avatar)
     }
 
+    suspend fun updateUsername(id: Int, newName: String) {
+        userDao.updateUsername(id, newName)
+    }
+
+    suspend fun updateFullName(id: Int, fullName: String) {
+        userDao.updateFullName(id, fullName)
+    }
 
 }

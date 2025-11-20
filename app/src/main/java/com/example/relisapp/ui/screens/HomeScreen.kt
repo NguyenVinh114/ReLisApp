@@ -11,19 +11,17 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.relisapp.ui.favorite.FavoriteManager
+import androidx.compose.ui.tooling.preview.Preview
+import com.example.relisapp.R
 
 @Composable
 fun HomeScreen(
@@ -31,22 +29,27 @@ fun HomeScreen(
     onReadingClick: () -> Unit,
     onProgressClick: () -> Unit,
     onSearchClick: () -> Unit,
-    onFavoriteClick: () -> Unit
+    onFavoriteClick: () -> Unit,
+    onProfileClick: () -> Unit   // ⭐ callback Profile
 ) {
-    val recentLessons = remember {
-        listOf("Listening: Travel", "Reading: Environment", "Listening Test A1")
-    }
-    val recommendedLessons = remember {
-        listOf("New Listening - Daily Life", "Reading - Health", "Listening - Music")
-    }
-
     var searchText by remember { mutableStateOf("") }
 
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text("ReLis – English Practice") })
+            TopAppBar(
+                title = { Text("ReLis – English Practice") },
+                actions = {
+                    IconButton(onClick = onProfileClick) {
+                        Icon(
+                            painterResource(id = R.drawable.outline_article_person_24),
+                            contentDescription = "Profile"
+                        )
+                    }
+                }
+            )
         }
     ) { innerPadding ->
+
         LazyColumn(
             modifier = Modifier
                 .padding(innerPadding)
@@ -55,7 +58,8 @@ fun HomeScreen(
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            // 👋 Welcome banner
+
+            // Welcome banner
             item {
                 Card(
                     colors = CardDefaults.cardColors(containerColor = Color(0xFF4E8DF5)),
@@ -63,134 +67,74 @@ fun HomeScreen(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Column(modifier = Modifier.padding(20.dp)) {
-                        Text(
-                            "👋 Welcome back,",
-                            color = Color.White,
-                            fontSize = 22.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Text(
-                            "Ready to improve your Listening & Reading skills?",
-                            color = Color.White,
-                            fontSize = 16.sp
-                        )
+                        Text("👋 Welcome back,", color = Color.White, fontSize = 22.sp)
+                        Text("Ready to improve your skills?", color = Color.White, fontSize = 16.sp)
                     }
                 }
             }
 
-            // 🔍 Search bar
+            // Search bar
             item {
                 OutlinedTextField(
                     value = searchText,
                     onValueChange = { searchText = it },
                     label = { Text("Search lessons...") },
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(12.dp)
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
 
-            // 📚 Main Features (Grid)
+            // Feature grid - ❗KHÔNG có PROFILE ở đây
             item {
-                Text("📂 Main Features", fontWeight = FontWeight.Bold, fontSize = 18.sp)
-
                 LazyVerticalGrid(
-                    columns = GridCells.Fixed(3),   // 3 cột
+                    columns = GridCells.Fixed(3),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(260.dp)            // đặt cao để
-                        .padding(top = 8.dp),
+                        .height(260.dp),
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                     userScrollEnabled = false
                 ) {
-                    items(listOf(
-                        "🎧 Listening" to onListeningClick,
-                        "📖 Reading" to onReadingClick,
-                        "📊 Progress" to onProgressClick,
-                        "🔍 Search" to onSearchClick,
-                        "❤️ Favorite" to onFavoriteClick
-                    )) { (title, action) ->
-                        FeatureButton(title, action)
+                    items(
+                        listOf(
+                            "🎧 Listening" to onListeningClick,
+                            "📖 Reading" to onReadingClick,
+                            "📊 Progress" to onProgressClick,
+                            "🔍 Search" to onSearchClick,
+                            "❤️ Favorite" to onFavoriteClick
+                        )
+                    ) { (title, action) ->
+                        FeatureCard(title, action)
                     }
                 }
-            }
-
-            // 📜 Recent Lessons
-            item {
-                Text("📜 Recent Lessons", fontWeight = FontWeight.Bold, fontSize = 18.sp)
-            }
-            items(recentLessons) { lesson ->
-                LessonCard(title = lesson)
-            }
-
-            // 🌟 Recommended Lessons
-            item {
-                Text("🌟 Recommended Lessons", fontWeight = FontWeight.Bold, fontSize = 18.sp)
-            }
-            items(recommendedLessons) { lesson ->
-                LessonCard(title = lesson)
             }
         }
     }
 }
 
 @Composable
-fun FeatureButton(title: String, onClick: () -> Unit) {
+fun FeatureCard(text: String, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .aspectRatio(1f) // vuông đẹp
+            .aspectRatio(1f)
             .clickable { onClick() },
-        colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(title, fontSize = 14.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
+        Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+            Text(text, fontWeight = FontWeight.Bold)
         }
     }
 }
+
+@Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun LessonCard(title: String) {
-    var isFavorite by remember { mutableStateOf(FavoriteManager.favorites.contains(title)) }
-
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp),
-        elevation = CardDefaults.cardElevation(2.dp)
-    ) {
-        Row(
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(title, fontSize = 16.sp)
-
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                // ❤️ Favorite button
-                IconButton(onClick = {
-                    if (isFavorite) {
-                        FavoriteManager.removeFavorite(title)
-                    } else {
-                        FavoriteManager.addFavorite(title)
-                    }
-                    isFavorite = !isFavorite
-                }) {
-                    Icon(
-                        imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                        contentDescription = "Favorite",
-                        tint = if (isFavorite) Color.Red else Color.Gray
-                    )
-                }
-
-                Text("→", fontSize = 20.sp, fontWeight = FontWeight.Bold)
-            }
-        }
-    }
+fun PreviewHomeScreen() {
+    HomeScreen(
+        onListeningClick = {},
+        onReadingClick = {},
+        onProgressClick = {},
+        onSearchClick = {},
+        onFavoriteClick = {},
+        onProfileClick = {}
+    )
 }
-

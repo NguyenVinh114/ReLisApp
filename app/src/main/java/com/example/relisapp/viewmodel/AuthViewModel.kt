@@ -108,6 +108,23 @@ class AuthViewModel(
             repository.deleteUser(user)
         }
     }
+    fun updateUsername(newName: String) {
+        viewModelScope.launch {
+            val userId = sessionManager.getUserId()
+            if (userId != -1) {
+                repository.updateUsername(userId, newName)
+            }
+        }
+    }
+
+    fun updateFullName(newFullName: String) {
+        viewModelScope.launch {
+            val id = sessionManager.getUserId()
+            if (id != -1) repository.updateFullName(id, newFullName)
+        }
+    }
+
+
 
 
     // Reset StateFlow

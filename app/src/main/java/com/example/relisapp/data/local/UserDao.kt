@@ -67,5 +67,10 @@ interface UserDao {
     @Query("UPDATE users SET avatar = :avatar WHERE user_id = :userId")
     suspend fun updateAvatar(userId: Int, avatar: ByteArray?)
 
+    @Query("UPDATE users SET username = :newName WHERE user_Id = :id")
+    suspend fun updateUsername(id: Int, newName: String)
+
+    @Query("UPDATE users SET full_name = :newFullName WHERE user_Id = :id")
+    suspend fun updateFullName(id: Int, newFullName: String)
 
 }

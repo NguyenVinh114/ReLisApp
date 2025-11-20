@@ -27,6 +27,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.screens.LoginActivity" android:exported="true" />
+        <activity android:name=".ui.screens.InfoProfileActivity" android:exported="true" />
+        <activity android:name=".ui.screens.ChangeForgotPassWordActivity" android:exported="true" />
+        <activity android:name=".ui.screens.ChangePasswordActivity" android:exported="true" />
+        <activity android:name=".ui.screens.ProfileActivity" android:exported="true" />
         <activity android:name=".ui.screens.VerificationActivity" android:exported="true" />
         <activity android:name=".ui.screens.RegisterActivity" android:exported="true" />
 
