@@ -20,6 +20,10 @@ android {
     }
 
     buildTypes {
+        debug {
+            // Bật chế độ gỡ lỗi
+            isDebuggable = true
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(
@@ -55,6 +59,10 @@ dependencies {
     // ✅ Room
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
+    implementation(libs.litert.support.api)
+    implementation(libs.androidx.ui)
+    implementation(libs.androidx.compose.runtime)
+    implementation(libs.androidx.material3)
     ksp(libs.room.compiler)
 
     // Test
@@ -65,4 +73,6 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+
+    implementation("androidx.compose.material:material-icons-extended:1.7.8")
 }
