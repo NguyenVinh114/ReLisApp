@@ -1,11 +1,13 @@
 package com.example.relisapp
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import com.example.relisapp.phat.ui.user.UserCategoryListActivity
 import com.example.relisapp.ui.favorite.FavoriteScreen
 import com.example.relisapp.ui.feedback.FeedbackScreen
 import com.example.relisapp.ui.screens.HomeScreen
@@ -24,7 +26,11 @@ class MainActivity : ComponentActivity() {
 
                 when (currentScreen.value) {
                     "home" -> HomeScreen(
-                        onListeningClick = { currentScreen.value = "listening" },
+                        onListeningClick = {
+                            val intent = Intent(this,
+                                UserCategoryListActivity::class.java)
+                            intent.putExtra("from_main", "listening") // key = "from_screen", value = "listening"
+                            startActivity(intent) },
                         onReadingClick = { currentScreen.value = "reading" },
                         onProgressClick = { currentScreen.value = "progress" },   // ✅ thêm Progress
                         onSearchClick = { currentScreen.value = "search" },

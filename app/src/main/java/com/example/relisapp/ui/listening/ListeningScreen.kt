@@ -88,7 +88,7 @@ fun ListeningScreen(onBack: () -> Unit) {
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            // 🎧 Audio Player
+            // 🎧 audio Player
             item {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
@@ -98,7 +98,7 @@ fun ListeningScreen(onBack: () -> Unit) {
                         modifier = Modifier.padding(16.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text("🎧 Audio Player (Demo)", fontWeight = FontWeight.Bold)
+                        Text("🎧 audio Player (Demo)", fontWeight = FontWeight.Bold)
                         Spacer(Modifier.height(8.dp))
                         Button(onClick = { /* TODO: play audio */ }) {
                             Text("▶ Play / Pause")
