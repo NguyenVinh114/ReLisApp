@@ -10,6 +10,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModelProvider
+import com.example.relisapp.MainActivity
 import com.example.relisapp.phat.data.AppDatabase
 import com.example.relisapp.phat.repository.CategoryRepository
 import com.example.relisapp.phat.ui.user.screen.BaseUserScreen
@@ -61,7 +62,8 @@ class UserCategoryListActivity : ComponentActivity() {
                             UserTab.CATEGORIES -> { /* Đang ở đây */ }
                             UserTab.HOME -> {
                                 Toast.makeText(this, "Back to Home", Toast.LENGTH_SHORT).show()
-                                // Code: navigate to Home
+                                val intent = Intent(this, MainActivity::class.java)
+                                startActivity(intent)
                             }
                             UserTab.LESSON -> {
                                 Toast.makeText(this, "Go to My Lessons", Toast.LENGTH_SHORT).show()

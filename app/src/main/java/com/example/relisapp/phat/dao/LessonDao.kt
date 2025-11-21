@@ -2,9 +2,7 @@ package com.example.relisapp.phat.dao
 
 import androidx.room.*
 import com.example.relisapp.phat.entity.Lessons
-import com.example.relisapp.phat.entity.Questions
-import com.example.relisapp.phat.entity.relations.QuestionWithChoices
-import kotlinx.coroutines.flow.Flow
+import com.example.relisapp.phat.entity.model.QuestionWithChoices
 
 @Dao
 interface LessonDao {
