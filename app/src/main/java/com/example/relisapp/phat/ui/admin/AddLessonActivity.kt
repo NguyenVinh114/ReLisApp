@@ -7,7 +7,10 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext // Import LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -73,10 +76,17 @@ class AddLessonActivity : ComponentActivity() {
         setContent {
             ReLisAppTheme {
                 val categories by categoryViewModel.categories.collectAsState(initial = emptyList())
+                val context = LocalContext.current
+
                 AddLessonScreen(
                     categories = categories,
                     types = types,
-                    onSave = { },
+                    onSave = { lesson ->
+                        // Thêm logic lưu vào ViewModel ở đây
+                        // lessonViewModel.addLesson(lesson)
+                        Toast.makeText(context, "Lesson Saved!", Toast.LENGTH_SHORT).show()
+                        finish() // Đóng activity sau khi lưu
+                    },
                     onBack = { finish() }
                 )
             }
@@ -92,14 +102,14 @@ fun AddLessonScreen(
     onSave: (Lessons) -> Unit,
     onBack: () -> Unit
 ) {
-    var lessons by remember { mutableStateOf(Lessons(categoryId = 0, title = "", type = "")) }
+    var lesson by remember { mutableStateOf(Lessons(categoryId = 0, title = "", type = "")) }
 
     Column(modifier = Modifier.padding(16.dp)) {
 
         OutlinedTextField(
-            value = lessons.title,
-            onValueChange = { lessons = lessons.copy(title = it) },
-            label = { Text("Tiêu đề") },
+            value = lesson.title,
+            onValueChange = { lesson = lesson.copy(title = it) },
+            label = { Text("Title") }, // ✅ SỬA
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -109,10 +119,10 @@ fun AddLessonScreen(
         var typeExpanded by remember { mutableStateOf(false) }
         ExposedDropdownMenuBox(expanded = typeExpanded, onExpandedChange = { typeExpanded = it }) {
             OutlinedTextField(
-                value = lessons.type,
+                value = lesson.type,
                 onValueChange = {},
                 readOnly = true,
-                label = { Text("Loại bài") },
+                label = { Text("Type") }, // ✅ SỬA
                 modifier = Modifier.menuAnchor().fillMaxWidth()
             )
             ExposedDropdownMenu(expanded = typeExpanded, onDismissRequest = { typeExpanded = false }) {
@@ -120,7 +130,7 @@ fun AddLessonScreen(
                     DropdownMenuItem(
                         text = { Text(t) },
                         onClick = {
-                            lessons = lessons.copy(type = t)
+                            lesson = lesson.copy(type = t)
                             typeExpanded = false
                         }
                     )
@@ -132,16 +142,16 @@ fun AddLessonScreen(
 
         // CATEGORY dropdown (lọc theo type)
         var catExpanded by remember { mutableStateOf(false) }
-        val filteredCategories = remember(lessons.type, categories) {
-            categories.filter { it.type == lessons.type }
+        val filteredCategories = remember(lesson.type, categories) {
+            categories.filter { it.type == lesson.type }
         }
 
         ExposedDropdownMenuBox(expanded = catExpanded, onExpandedChange = { catExpanded = it }) {
             OutlinedTextField(
-                value = filteredCategories.find { it.categoryId == lessons.categoryId }?.categoryName ?: "",
+                value = filteredCategories.find { it.categoryId == lesson.categoryId }?.categoryName ?: "",
                 onValueChange = {},
                 readOnly = true,
-                label = { Text("Chủ đề") },
+                label = { Text("Category") }, // ✅ SỬA
                 modifier = Modifier.menuAnchor().fillMaxWidth()
             )
             ExposedDropdownMenu(expanded = catExpanded, onDismissRequest = { catExpanded = false }) {
@@ -149,13 +159,16 @@ fun AddLessonScreen(
                     DropdownMenuItem(
                         text = { Text(c.categoryName) },
                         onClick = {
-                            lessons = lessons.copy(categoryId = c.categoryId)
+                            lesson = lesson.copy(categoryId = c.categoryId)
                             catExpanded = false
                         }
                     )
                 }
                 if (filteredCategories.isEmpty()) {
-                    DropdownMenuItem(text = { Text("Không có chủ đề") }, onClick = { catExpanded = false })
+                    DropdownMenuItem(
+                        text = { Text("No categories available") }, // ✅ SỬA
+                        onClick = { catExpanded = false }
+                    )
                 }
             }
         }
@@ -164,19 +177,19 @@ fun AddLessonScreen(
         Spacer(Modifier.height(10.dp))
 
         OutlinedTextField(
-            value = lessons.content ?: "",
-            onValueChange = { lessons = lessons.copy(content = it) },
-            label = { Text("Nội dung") },
+            value = lesson.content ?: "",
+            onValueChange = { lesson = lesson.copy(content = it) },
+            label = { Text("Content") }, // ✅ SỬA
             modifier = Modifier.fillMaxWidth()
         )
 
         Spacer(Modifier.height(20.dp))
 
         Button(
-            onClick = { onSave(lessons) },
+            onClick = { onSave(lesson) },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Lưu bài học")
+            Text("Save Lesson") // ✅ SỬA
         }
 
         Spacer(Modifier.height(10.dp))
@@ -185,7 +198,7 @@ fun AddLessonScreen(
             onClick = onBack,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Quay lại")
+            Text("Back") // ✅ SỬA
         }
     }
 }

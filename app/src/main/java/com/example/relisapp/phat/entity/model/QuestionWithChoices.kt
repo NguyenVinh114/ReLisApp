@@ -1,6 +1,6 @@
 // File: phat/entity/relations/QuestionWithChoices.kt
 
-package com.example.relisapp.phat.entity.relations
+package com.example.relisapp.phat.entity.model
 
 import androidx.room.Embedded
 import androidx.room.Relation

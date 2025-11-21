@@ -47,7 +47,7 @@ fun UserFreshTheme(
 
     MaterialTheme(
         colorScheme = FreshColorScheme,
-        // typography = Typography, // Có thể import Typography gốc nếu muốn giữ font chữ
+        typography = Typography, // Có thể import Typography gốc nếu muốn giữ font chữ
         content = content
     )
 }

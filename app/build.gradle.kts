@@ -76,5 +76,6 @@ dependencies {
 
     implementation("androidx.compose.material:material-icons-extended:1.7.8")
 
-    
+    implementation("androidx.compose.material:material-icons-extended-android:1.7.8") // Thay 1.6.7 bằng phiên bản Compose của bạn
+
 }

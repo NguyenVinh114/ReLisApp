@@ -17,10 +17,10 @@
         <activity
             android:name=".MainActivity"
             android:exported="true">
-            <intent-filter>
+           <!-- <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            </intent-filter>-->
         </activity>
 
         <!-- 👇 Login và Register vẫn giữ lại, ko cần intent-filter -->
@@ -30,10 +30,10 @@
 
         <activity android:name=".phat.ui.admin.AdminDashboardActivity"
             android:exported="true">
-         <!--   <intent-filter>
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>-->
+            </intent-filter>
         </activity>
 
         <activity android:name=".phat.ui.admin.AddLessonActivity"/>
@@ -41,7 +41,7 @@
         <activity android:name=".phat.ui.admin.CategoryListActivity"/>
         <activity android:name=".phat.ui.user.UserCategoryListActivity"
             android:exported="true">
-<!--            <intent-filter>
+           <!-- <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>-->

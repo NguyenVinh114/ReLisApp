@@ -3,7 +3,8 @@ package com.example.relisapp.phat.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.relisapp.phat.entity.Lessons
-import com.example.relisapp.phat.entity.relations.QuestionWithChoices
+import com.example.relisapp.phat.entity.model.AnswerResult
+import com.example.relisapp.phat.entity.model.QuestionWithChoices
 import com.example.relisapp.phat.repository.LessonRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -69,33 +70,44 @@ class LessonViewModel(private val repository: LessonRepository) : ViewModel() {
      * Logic này không thay đổi và vẫn đúng.
      * @param selectedAnswers Một Map với key là questionId và value là choiceId người dùng đã chọn.
      */
+    private val _quizResults = MutableStateFlow<List<AnswerResult>>(emptyList())
+    val quizResults: StateFlow<List<AnswerResult>> = _quizResults.asStateFlow()
+
     fun submitAnswers(selectedAnswers: Map<Int, String>) {
         var calculatedScore = 0
+        val results = mutableListOf<AnswerResult>()
+
         _questions.value.forEach { questionWithChoices ->
             val question = questionWithChoices.question
-            val userAnswer = selectedAnswers[question.questionId]
+            val userAnswer = selectedAnswers[question.questionId]?.trim() // Lấy và cắt khoảng trắng
 
-            if (userAnswer != null) {
-                var isCorrect = false
-                when (question.questionType) {
-                    "fill_in_the_blank" -> {
-                        // So sánh text, không phân biệt hoa thường
-                        isCorrect = userAnswer.equals(question.correctAnswer, ignoreCase = true)
-                    }
-                    else -> { // Mặc định là "multiple_choice"
-                        // Tìm choiceId đúng
-                        val correctChoice = questionWithChoices.choices.find { it.isCorrect == 1 }
-                        // So sánh câu trả lời (là choiceId dạng String) với choiceId đúng
-                        isCorrect = (correctChoice != null && userAnswer == correctChoice.choiceId.toString())
-                    }
-                }
-
-                if (isCorrect) {
-                    calculatedScore++
+            // Xác định câu trả lời đúng
+            val correctAnswer: String = when (question.questionType) {
+                "fill_in_the_blank" -> question.correctAnswer ?: ""
+                else -> { // multiple_choice
+                    questionWithChoices.choices.find { it.isCorrect == 1 }?.choiceId?.toString() ?: ""
                 }
             }
+
+            val isCorrect = userAnswer.equals(correctAnswer, ignoreCase = true)
+
+            if (isCorrect) {
+                calculatedScore++
+            }
+
+            // Thêm kết quả chi tiết vào danh sách
+            results.add(
+                AnswerResult(
+                    questionId = question.questionId,
+                    userAnswer = userAnswer,
+                    correctAnswer = correctAnswer,
+                    isCorrect = isCorrect
+                )
+            )
         }
+
         _score.value = calculatedScore
+        _quizResults.value = results // Cập nhật StateFlow kết quả
     }
 
 

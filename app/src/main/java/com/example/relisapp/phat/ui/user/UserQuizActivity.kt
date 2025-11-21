@@ -47,6 +47,7 @@ class UserQuizActivity : ComponentActivity() {
                 val score by lessonViewModel.score.collectAsStateWithLifecycle()
                 val isLoading by lessonViewModel.isLoadingQuiz.collectAsStateWithLifecycle() // Lấy state mới
                 val audioPath by lessonViewModel.audioPath.collectAsStateWithLifecycle()
+                val quizResults by lessonViewModel.quizResults.collectAsStateWithLifecycle()
                 // Truyền state mới vào UserQuizScreen
                 UserQuizScreen(
 /*
@@ -57,6 +58,7 @@ class UserQuizActivity : ComponentActivity() {
                     isLoading = isLoading,
                     audioPath = audioPath,// Truyền vào đây
                     score = score,
+                    quizResults = quizResults,
                     onBackClick = { finish() },
                     onSubmit = { selectedAnswers ->
                         lessonViewModel.submitAnswers(selectedAnswers)

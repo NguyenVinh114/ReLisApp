@@ -10,6 +10,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.relisapp.MainActivity
 import com.example.relisapp.phat.data.AppDatabase
 import com.example.relisapp.phat.repository.LessonRepository
 import com.example.relisapp.phat.ui.theme.UserFreshTheme
@@ -52,7 +53,22 @@ class UserLessonListActivity : ComponentActivity() {
                     title = categoryName, // Hiển thị tên Category trên TopBar
                     currentTab = UserTab.CATEGORIES, // Vẫn highlight tab Categories
                     onUserIconClick = { /* Xử lý sự kiện */ },
-                    onTabSelected = { /* Xử lý sự kiện điều hướng */ }
+                    onTabSelected = { selectedTab ->
+                        when (selectedTab) {
+                            UserTab.CATEGORIES -> { /* Đang ở đây */ }
+                            UserTab.HOME -> {
+                                Toast.makeText(this, "Back to Home", Toast.LENGTH_SHORT).show()
+                                val intent = Intent(this, MainActivity::class.java)
+                                startActivity(intent)
+                            }
+                            UserTab.LESSON -> {
+                                Toast.makeText(this, "Go to My Lessons", Toast.LENGTH_SHORT).show()
+                            }
+                            UserTab.PROFILE -> {
+                                Toast.makeText(this, "Go to Profile", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
                 ) { innerPadding ->
                     UserLessonListScreen(
                         lessons = lessons,
