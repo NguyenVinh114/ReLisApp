@@ -76,12 +76,7 @@ class AddLessonActivity : ComponentActivity() {
                 AddLessonScreen(
                     categories = categories,
                     types = types,
-                    onSave = { lesson ->
-                        lesson.createdBy = 1  // giả định adminId
-                        lessonViewModel.addLesson(lesson)
-                        Toast.makeText(this, "Thêm bài học thành công", Toast.LENGTH_SHORT).show()
-                        finish()
-                    },
+                    onSave = { },
                     onBack = { finish() }
                 )
             }

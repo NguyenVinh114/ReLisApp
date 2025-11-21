@@ -2,8 +2,7 @@ package com.example.relisapp.phat.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.relisapp.phat.repository.CategoryRepository
-import com.example.relisapp.phat.repository.LessonRepository
+import com.example.relisapp.phat.repository.*
 
 // ------------------- CategoryViewModel Factory -------------------
 class CategoryViewModelFactory(private val repo: CategoryRepository) : ViewModelProvider.Factory {
@@ -27,4 +26,35 @@ class LessonViewModelFactory(private val repo: LessonRepository) : ViewModelProv
     }
 }
 
-// Bạn có thể thêm các factory khác ở đây khi cần
+// ------------------- 3. UserViewModel Factory (Cho Users) -------------------
+class UserViewModelFactory(private val repo: UserRepository) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(UserViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return UserViewModel(repo) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
+    }
+}
+
+// ------------------- 4. ProgressViewModel Factory (Cho Progress) -------------------
+class ProgressViewModelFactory(private val repo: ProgressRepository) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(ProgressViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return ProgressViewModel(repo) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
+    }
+}
+
+// ------------------- 5. ResultViewModel Factory (Cho Results) -------------------
+class ResultViewModelFactory(private val repo: ResultRepository) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(ResultViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return ResultViewModel(repo) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
+    }
+}

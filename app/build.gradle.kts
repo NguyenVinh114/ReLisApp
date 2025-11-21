@@ -46,7 +46,7 @@ android {
 
 dependencies {
     implementation(libs.mpandroidchart)
-    
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -75,4 +75,6 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
     implementation("androidx.compose.material:material-icons-extended:1.7.8")
+
+    
 }
