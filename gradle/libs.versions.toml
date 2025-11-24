@@ -11,6 +11,10 @@ composeBom = "2024.09.00"
 room = "2.8.0"
 ksp = "2.0.21-1.0.25"
 mpchart = "v3.1.0"
+litertSupportApi = "1.4.1"
+ui = "1.9.4"
+runtime = "1.9.4"
+material3 = "1.4.0"
 
 [libraries]
 mpandroidchart = { module = "com.github.PhilJay:MPAndroidChart", version.ref = "mpchart" }
@@ -35,6 +39,10 @@ androidx-compose-material3 = { group = "androidx.compose.material3", name = "mat
 room-runtime  = { module = "androidx.room:room-runtime", version.ref = "room" }
 room-ktx      = { module = "androidx.room:room-ktx", version.ref = "room" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+litert-support-api = { group = "com.google.ai.edge.litert", name = "litert-support-api", version.ref = "litertSupportApi" }
+androidx-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "ui" }
+androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "runtime" }
+androidx-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

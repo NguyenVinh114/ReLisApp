@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
-
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.example.relisapp">
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -17,16 +17,39 @@
         <activity
             android:name=".MainActivity"
             android:exported="true">
+             <intent-filter>
+                 <action android:name="android.intent.action.MAIN" />
+                 <category android:name="android.intent.category.LAUNCHER" />
+             </intent-filter>
+        </activity>
+
+        <!--&lt;!&ndash; 👇 Login và Register vẫn giữ lại, ko cần intent-filter &ndash;&gt;
+        <activity android:name=".ui.screens.LoginActivity" android:exported="false" />
+        <activity android:name=".ui.screens.RegisterActivity" android:exported="false" />-->
+
+
+     <!--   <activity android:name=".phat.ui.admin.AdminDashboardActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>-->
+
+       <!-- <activity android:name=".phat.ui.admin.AddLessonActivity"/>
+        <activity android:name=".phat.ui.admin.AddCategoryActivity"/>
+        <activity android:name=".phat.ui.admin.CategoryListActivity"/>-->
+        <activity android:name=".ui.user.screen.UserCategoryListActivity"
+            android:exported="true">
+            <!-- <intent-filter>
+                 <action android:name="android.intent.action.MAIN" />
+                 <category android:name="android.intent.category.LAUNCHER" />
+             </intent-filter>-->
         </activity>
-
-        <!-- 👇 Login và Register vẫn giữ lại, ko cần intent-filter -->
-        <activity android:name=".ui.screens.LoginActivity" android:exported="true" />
-        <activity android:name=".ui.screens.RegisterActivity" android:exported="true" />
-
+        <activity android:name=".ui.user.screen.UserLessonListActivity"/>
+        <activity
+            android:name=".ui.user.screen.UserQuizActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

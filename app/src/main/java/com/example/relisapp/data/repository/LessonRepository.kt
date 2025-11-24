@@ -1,17 +1,48 @@
 package com.example.relisapp.data.repository
 
-import com.example.relisapp.data.local.LessonDao
-import com.example.relisapp.model.Lesson
+import com.example.relisapp.data.local.dao.LessonDao
+import com.example.relisapp.data.local.dao.ResultDao // <--- Đảm bảo Import dòng này
+import com.example.relisapp.data.local.entity.Comments
+import com.example.relisapp.data.local.entity.Lessons
+import com.example.relisapp.data.local.entity.Results
+import com.example.relisapp.data.local.entity.model.CommentWithUser
+import com.example.relisapp.data.local.entity.model.QuestionWithChoices
+import kotlinx.coroutines.flow.Flow
 
-class LessonRepository(private val lessonDao: LessonDao) {
+// 1. THÊM private val resultDao: ResultDao VÀO TRONG NGOẶC ĐƠN
+class LessonRepository(
+    private val lessonDao: LessonDao,
+    private val resultDao: ResultDao
+) {
 
-    suspend fun insertLesson(lesson: Lesson) = lessonDao.insertLesson(lesson)
+    // --- CÁC HÀM LIÊN QUAN ĐẾN LESSON ---
+    suspend fun getLessons(): List<Lessons> = lessonDao.getAll()
+    suspend fun addLesson(lessons: Lessons) = lessonDao.insert(lessons)
 
-    suspend fun updateLesson(lesson: Lesson) = lessonDao.updateLesson(lesson)
+    suspend fun getQuestionsWithChoicesForLesson(lessonId: Int): List<QuestionWithChoices> {
+        return lessonDao.getQuestionsWithChoicesForLesson(lessonId)
+    }
 
-    suspend fun deleteLesson(lesson: Lesson) = lessonDao.deleteLesson(lesson)
+    suspend fun getLessonsByCategoryId(categoryId: Int): List<Lessons> {
+        return lessonDao.getLessonsByCategoryId(categoryId)
+    }
 
-    suspend fun getLessonById(id: Int) = lessonDao.getLessonById(id)
+    suspend fun getLessonById(lessonId: Int): Lessons? {
+        return lessonDao.getLessonById(lessonId)
+    }
 
-    suspend fun getAllLessons() = lessonDao.getAllLessons()
+    // --- CÁC HÀM LIÊN QUAN ĐẾN COMMENT (Nếu bạn viết trong LessonDao) ---
+    fun getCommentsForLesson(lessonId: Int): Flow<List<CommentWithUser>> {
+        return lessonDao.getCommentsForLesson(lessonId)
+    }
+
+    suspend fun addComment(comment: Comments) {
+        lessonDao.insertComment(comment)
+    }
+
+    // --- CÁC HÀM LIÊN QUAN ĐẾN RESULT ---
+    suspend fun addResult(results: Results) {
+        // 2. GỌI HÀM TỪ BIẾN resultDao ĐÃ KHAI BÁO Ở TRÊN
+        resultDao.insertResult(results)
+    }
 }

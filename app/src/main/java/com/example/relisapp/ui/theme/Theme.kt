@@ -52,7 +52,7 @@ fun ReLisAppTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
+       /* typography = Typography,*/
         content = content
     )
 }
