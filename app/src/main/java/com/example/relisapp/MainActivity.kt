@@ -31,7 +31,10 @@ class MainActivity : ComponentActivity() {
                                 UserCategoryListActivity::class.java)
                             intent.putExtra("from_main", "listening") // key = "from_screen", value = "listening"
                             startActivity(intent) },
-                        onReadingClick = { currentScreen.value = "reading" },
+                        onReadingClick = {  val intent = Intent(this,
+                            UserCategoryListActivity::class.java)
+                            intent.putExtra("from_main", "reading") // key = "from_screen", value = "listening"
+                            startActivity(intent) },
                         onProgressClick = { currentScreen.value = "progress" },   // ✅ thêm Progress
                         onSearchClick = { currentScreen.value = "search" },
                         onFavoriteClick = { currentScreen.value = "favorite" }    // ✅ thêm Favorite

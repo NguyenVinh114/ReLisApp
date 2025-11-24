@@ -17,13 +17,12 @@
         <activity
             android:name=".MainActivity"
             android:exported="true">
-           <!-- <intent-filter>
+            <!--<intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>-->
         </activity>
 
-        <!-- 👇 Login và Register vẫn giữ lại, ko cần intent-filter -->
         <activity android:name=".ui.screens.LoginActivity" android:exported="false" />
         <activity android:name=".ui.screens.RegisterActivity" android:exported="false" />
 
@@ -37,19 +36,22 @@
         </activity>
 
         <activity android:name=".phat.ui.admin.AddLessonActivity"/>
-        <activity android:name=".phat.ui.admin.AddCategoryActivity"/>
+        <activity android:name=".phat.ui.admin.AddEditCategoryActivity"/>
         <activity android:name=".phat.ui.admin.CategoryListActivity"/>
         <activity android:name=".phat.ui.user.UserCategoryListActivity"
-            android:exported="true">
-           <!-- <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>-->
-        </activity>
+            android:exported="true"/>
         <activity android:name=".phat.ui.user.UserLessonListActivity"/>
+        <activity android:name=".phat.ui.admin.LessonListActivity"/>
         <activity
             android:name=".phat.ui.user.UserQuizActivity"
             android:exported="false" />
+        <activity android:name=".phat.ui.admin.LessonDetailActivity"
+            android:exported="false"/>
+        <activity android:name=".phat.ui.admin.AddEditQuestionActivity"
+            android:exported="false"/>
+        <activity android:name=".phat.ui.admin.QuestionListActivity"
+            android:exported="false"/>
+
     </application>
 
 </manifest>

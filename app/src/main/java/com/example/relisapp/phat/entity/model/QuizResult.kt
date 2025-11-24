@@ -19,3 +19,7 @@ enum class ChoiceState {
     // Đáp án đúng (nhưng người dùng không chọn)
     SHOW_CORRECT_ANSWER
 }
+enum class QuestionType {
+    MULTIPLE_CHOICE, // Trắc nghiệm
+    FILL_IN_THE_BLANK // Điền vào chỗ trống
+}
