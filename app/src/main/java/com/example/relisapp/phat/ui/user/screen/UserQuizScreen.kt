@@ -2,7 +2,6 @@ package com.example.relisapp.phat.ui.user.screen
 
 import android.media.MediaPlayer
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
@@ -18,6 +17,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.MenuBook
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -133,46 +133,62 @@ private fun ExpandableLessonContent(
     content: String,
     modifier: Modifier = Modifier
 ) {
-    var isExpanded by remember { mutableStateOf(false) }
-
-    Card(
-        modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(12.dp),
-        elevation = CardDefaults.cardElevation(2.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f))
+    // 1. Dùng Box để vẽ đường kẻ trang trí bên trái
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            // Dùng clip để bo tròn các góc
+            .clip(RoundedCornerShape(16.dp))
+            // Thêm một lớp nền tinh tế cho toàn bộ component
+            .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.05f))
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .animateContentSize()
-                .clickable { isExpanded = !isExpanded }
-                .padding(16.dp)
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(
-                    text = "Lesson Content",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
-                )
-                Icon(
-                    imageVector = if (isExpanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
-                    contentDescription = if (isExpanded) "Collapse" else "Expand"
-                )
-            }
+        Row {
+            // 2. Đường kẻ dọc bên trái làm điểm nhấn (Decorative Bar)
+            Box(
+                modifier = Modifier
+                    .width(4.dp)
+                    .fillMaxHeight() // Cao bằng nội dung bên trong
+                    .background(MaterialTheme.colorScheme.primary)
+            )
 
-            AnimatedVisibility(visible = isExpanded) {
-                Column {
-                    HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
+            // 3. Nội dung chính nằm trong Column
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    // Padding cho nội dung, tách biệt khỏi đường kẻ và cạnh Box
+                    .padding(start = 16.dp, end = 16.dp, top = 20.dp, bottom = 20.dp)
+            ) {
+                // --- Phần Header ---
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.MenuBook, // Icon quyển sách
+                        contentDescription = "Lesson Icon",
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(24.dp) // Kích thước icon tinh chỉnh
+                    )
+                    Spacer(Modifier.width(12.dp))
                     Text(
-                        text = content,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurface
+                        text = "Lesson Content",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary // Màu chữ tiêu đề đồng bộ
                     )
                 }
+
+                // --- Phần Nội dung ---
+                Spacer(Modifier.height(16.dp))
+
+                Text(
+                    text = content,
+                    style = MaterialTheme.typography.bodyLarge,
+                    // Màu chữ nội dung dễ đọc trên nền sáng
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.87f),
+                    // Thêm line height để các dòng không dính vào nhau
+                    lineHeight = 24.sp
+                )
             }
         }
     }
