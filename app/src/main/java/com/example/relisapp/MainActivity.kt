@@ -1,5 +1,6 @@
 package com.example.relisapp
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -8,16 +9,21 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import com.example.relisapp.data.local.data.AppDatabase
+import com.example.relisapp.data.local.data.AppDatabase // Import cần thiết cho DB
+import com.example.relisapp.phat.ui.user.UserCategoryListActivity // Import cho Category List
 import com.example.relisapp.ui.favorite.FavoriteScreen
 import com.example.relisapp.ui.feedback.FeedbackScreen
 import com.example.relisapp.ui.listening.ListeningScreen
 import com.example.relisapp.ui.search.SearchScreen
 import com.example.relisapp.ui.theme.ReLisAppTheme
-import com.example.relisapp.ui.user.screen.*
+import com.example.relisapp.ui.user.screen.HomeScreen // Cần đảm bảo import chính xác
+import com.example.relisapp.ui.user.screen.ProgressScreen // Cần đảm bảo import chính xác
+import com.example.relisapp.ui.user.screen.UserQuizActivity // Cần đảm bảo import chính xác
 import com.example.relisapp.ui.viewmodel.HomeViewModel
 import com.example.relisapp.ui.viewmodel.ProgressViewModel
-import android.content.Context
+// Các import khác từ phiên bản 1 đã được giữ lại nếu cần:
+// import com.example.relisapp.ui.progress.ProgressScreen // -> thay thế bằng .ui.user.screen.ProgressScreen
+// import com.example.relisapp.ui.screens.HomeScreen // -> thay thế bằng .ui.user.screen.HomeScreen
 
 class MainActivity : ComponentActivity() {
 
@@ -25,7 +31,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        // 1. Khởi tạo DB
+        // 1. Khởi tạo Database
         val db = AppDatabase.getDatabase(this)
 
         // 2. Khởi tạo HomeViewModel
@@ -53,8 +59,9 @@ class MainActivity : ComponentActivity() {
                 when (currentScreen.value) {
 
                     "home" -> HomeScreen(
-                        homeViewModel = homeViewModel,
+                        homeViewModel = homeViewModel, // ✅ Thêm ViewModel
                         onListeningClick = {
+                            // Chuyển sang Category List cho Listening
                             val intent = Intent(this@MainActivity, UserCategoryListActivity::class.java).apply {
                                 putExtra("TARGET_SKILL", "listening")
                                 putExtra("from_main", "Listening")
@@ -62,6 +69,7 @@ class MainActivity : ComponentActivity() {
                             startActivity(intent)
                         },
                         onReadingClick = {
+                            // Chuyển sang Category List cho Reading
                             val intent = Intent(this@MainActivity, UserCategoryListActivity::class.java).apply {
                                 putExtra("TARGET_SKILL", "reading")
                                 putExtra("from_main", "Reading")
@@ -76,7 +84,7 @@ class MainActivity : ComponentActivity() {
                     )
 
                     "progress" -> ProgressScreen(
-                        viewModel = progressViewModel,
+                        viewModel = progressViewModel, // ✅ Thêm ViewModel
                         userId = currentUserId, // ✅ truyền UserId vào
                         onBack = { currentScreen.value = "home" }
                     )
@@ -88,6 +96,7 @@ class MainActivity : ComponentActivity() {
                     "search" -> SearchScreen(
                         onBack = { currentScreen.value = "home" },
                         onLessonClick = { lesson ->
+                            // Chuyển sang màn hình Feedback/Làm bài sau khi chọn bài
                             currentScreen.value = "feedback"
                         }
                     )
@@ -102,7 +111,7 @@ class MainActivity : ComponentActivity() {
                     }
 
                     "favorite" -> FavoriteScreen(
-                        homeViewModel = homeViewModel,
+                        homeViewModel = homeViewModel, // ✅ Thêm ViewModel
                         onBack = { currentScreen.value = "home" },
                         onLessonClick = { lesson ->
                             // Chuyển sang màn hình làm bài (UserQuizActivity)

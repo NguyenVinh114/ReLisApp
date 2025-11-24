@@ -20,10 +20,6 @@ android {
     }
 
     buildTypes {
-        debug {
-            // Bật chế độ gỡ lỗi
-            isDebuggable = true
-        }
         release {
             isMinifyEnabled = false
             proguardFiles(
@@ -46,7 +42,7 @@ android {
 
 dependencies {
     implementation(libs.mpandroidchart)
-
+    
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -59,10 +55,6 @@ dependencies {
     // ✅ Room
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
-    implementation(libs.litert.support.api)
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.compose.runtime)
-    implementation(libs.androidx.material3)
     ksp(libs.room.compiler)
 
     // Test
@@ -73,6 +65,25 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+
+    implementation("androidx.compose.material:material-icons-extended:1.7.8")
+
+    implementation("androidx.compose.material:material-icons-extended-android:1.7.8") // Thay 1.6.7 bằng phiên bản Compose của bạn
+
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.10.0") // Hoặc phiên bản mới hơn
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
+
+    implementation("com.google.android.gms:play-services-auth:21.2.0")
+    implementation("com.google.android.gms:play-services-auth-api-phone:18.1.0")
+
+    implementation("com.google.android.gms:play-services-safetynet:18.1.0")
+
+    implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
+    implementation("com.google.firebase:firebase-analytics-ktx")
+    implementation("com.google.firebase:firebase-auth-ktx")
+
+    implementation("androidx.work:work-runtime-ktx:2.9.0")
+
 
     implementation("androidx.compose.material:material-icons-extended:1.7.8")
 
