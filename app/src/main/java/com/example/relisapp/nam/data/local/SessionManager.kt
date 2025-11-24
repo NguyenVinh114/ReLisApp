@@ -11,28 +11,30 @@ class SessionManager(context: Context) {
     companion object {
         private const val KEY_IS_LOGGED_IN = "is_logged_in"
         private const val KEY_USER_ID = "user_id"
+        private const val KEY_ROLE = "role"
     }
 
-    // Lưu trạng thái đăng nhập + ID user
-    fun saveLogin(userId: Int) {
+    fun saveLogin(userId: Int, role: String?) {
         prefs.edit()
             .putBoolean(KEY_IS_LOGGED_IN, true)
             .putInt(KEY_USER_ID, userId)
+            .putString(KEY_ROLE, role)
             .apply()
     }
 
-    // Kiểm tra đã đăng nhập chưa
-    fun isLoggedIn(): Boolean {
-        return prefs.getBoolean(KEY_IS_LOGGED_IN, false)
-    }
+    fun isLoggedIn(): Boolean =
+        prefs.getBoolean(KEY_IS_LOGGED_IN, false)
 
-    // Lấy ID user (dùng cho Repository → Database)
-    fun getUserId(): Int {
-        return prefs.getInt(KEY_USER_ID, -1)
-    }
+    fun getUserId(): Int =
+        prefs.getInt(KEY_USER_ID, -1)
 
-    // Xoá toàn bộ session (logout)
+    fun getUserRole(): String? =
+        prefs.getString(KEY_ROLE, null)
+
     fun logout() {
         prefs.edit().clear().apply()
     }
+
+    fun getRole(): String? = prefs.getString(KEY_ROLE, null)
 }
+
