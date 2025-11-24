@@ -2,20 +2,23 @@ package com.example.relisapp.phat.ui.user.screen
 
 import android.media.MediaPlayer
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Error
-import androidx.compose.material.icons.filled.PauseCircle
-import androidx.compose.material.icons.filled.PlayCircle
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.getValue
@@ -24,130 +27,151 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.relisapp.phat.entity.model.AnswerResult
 import com.example.relisapp.phat.entity.Choices
+import com.example.relisapp.phat.entity.model.AnswerResult
 import com.example.relisapp.phat.entity.model.ChoiceState
 import com.example.relisapp.phat.entity.model.QuestionWithChoices
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
-import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.border
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.filled.Replay5
-import androidx.compose.material.icons.filled.Forward5
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Close
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserQuizScreen(
-    lessonTitle: String?,
+    modifier: Modifier = Modifier,
+    // lessonTitle không còn cần thiết nếu bạn đã dùng BaseUserScreen
+    // lessonTitle: String?,
     questionsWithChoices: List<QuestionWithChoices>,
     isLoading: Boolean,
     audioPath: String?,
+    lessonContent: String?,
     score: Int,
-    onBackClick: () -> Unit,
     quizResults: List<AnswerResult>,
     onSubmit: (selectedAnswers: Map<Int, String>) -> Unit
 ) {
     val selectedAnswers = remember { mutableStateMapOf<Int, String>() }
     var isSubmitted by remember { mutableStateOf(false) }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = lessonTitle ?: "Quiz",
-                        fontWeight = FontWeight.Bold,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = onBackClick) {
-                        Icon(
-                            Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back"
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-            )
-        },
-        bottomBar = {
-            QuizFooter(
-                isSubmitted = isSubmitted,
-                score = score,
-                totalQuestions = questionsWithChoices.size,
-                isAllAnswered = selectedAnswers.size == questionsWithChoices.size,
-                onSubmitClick = {
-                    onSubmit(selectedAnswers.toMap())
-                    isSubmitted = true
-                }
-            )
-        }
-    ) { innerPadding ->
+    Column(modifier = modifier.fillMaxSize()) {
         Box(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
+                .weight(1f)
+                .fillMaxWidth()
                 .background(MaterialTheme.colorScheme.surface),
             contentAlignment = Alignment.Center
         ) {
-            when {
-                isLoading -> CircularProgressIndicator()
-                questionsWithChoices.isEmpty() -> EmptyState()
-                else -> {
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(vertical = 16.dp)
-                    ) {
-                        audioPath?.let {
-                            item {
-                                AudioPlayerFromAssets(
-                                    fileName = it,
-                                    modifier = Modifier.padding(bottom = 16.dp)
-                                )
-                            }
-                        }
-                        itemsIndexed(questionsWithChoices, key = { _, item -> item.question.questionId }) { index, item ->
-                            val result = if (isSubmitted) {
-                                quizResults.find { it.questionId == item.question.questionId }
-                            } else {
-                                null
-                            }
-
-                            QuestionItem(
-                                questionIndex = index + 1,
-                                questionWithChoices = item,
-                                answer = selectedAnswers[item.question.questionId],
-                                enabled = !isSubmitted,
-                                result = result,
-                                onAnswerChange = { qId, ans ->
-                                    selectedAnswers[qId] = ans
-                                }
+            // [SỬA LẠI LOGIC Ở ĐÂY]
+            // 1. Ưu tiên hiển thị màn hình loading.
+            // 2. Sau khi không loading, mới kiểm tra có câu hỏi hay không.
+            if (isLoading) {
+                CircularProgressIndicator()
+            } else if (questionsWithChoices.isEmpty()) {
+                EmptyState()
+            } else {
+                // Nội dung LazyColumn giữ nguyên, không thay đổi
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(vertical = 16.dp)
+                ) {
+                    audioPath?.let {
+                        item {
+                            AudioPlayerFromAssets(
+                                fileName = it,
+                                modifier = Modifier.padding(bottom = 16.dp)
                             )
-                            if (index < questionsWithChoices.lastIndex) {
-                                HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp))
-                            }
                         }
                     }
+                    if (!lessonContent.isNullOrBlank()) {
+                        item {
+                            ExpandableLessonContent(
+                                content = lessonContent,
+                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                            )
+                        }
+                    }
+                    itemsIndexed(questionsWithChoices, key = { _, item -> item.question.questionId }) { index, item ->
+                        val result = if (isSubmitted) {
+                            quizResults.find { it.questionId == item.question.questionId }
+                        } else null
+
+                        QuestionItem(
+                            questionIndex = index + 1,
+                            questionWithChoices = item,
+                            answer = selectedAnswers[item.question.questionId],
+                            enabled = !isSubmitted,
+                            result = result,
+                            onAnswerChange = { qId, ans ->
+                                selectedAnswers[qId] = ans
+                            }
+                        )
+                        if (index < questionsWithChoices.lastIndex) {
+                            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp))
+                        }
+                    }
+                }
+            }
+        }
+        QuizFooter(
+            isSubmitted = isSubmitted,
+            score = score,
+            totalQuestions = questionsWithChoices.size,
+            isAllAnswered = selectedAnswers.size == questionsWithChoices.size,
+            onSubmitClick = {
+                onSubmit(selectedAnswers.toMap())
+                isSubmitted = true
+            }
+        )
+    }
+}
+
+@Composable
+private fun ExpandableLessonContent(
+    content: String,
+    modifier: Modifier = Modifier
+) {
+    var isExpanded by remember { mutableStateOf(false) }
+
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp),
+        elevation = CardDefaults.cardElevation(2.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f))
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .animateContentSize()
+                .clickable { isExpanded = !isExpanded }
+                .padding(16.dp)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = "Lesson Content",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                Icon(
+                    imageVector = if (isExpanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
+                    contentDescription = if (isExpanded) "Collapse" else "Expand"
+                )
+            }
+
+            AnimatedVisibility(visible = isExpanded) {
+                Column {
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
+                    Text(
+                        text = content,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
                 }
             }
         }
@@ -180,7 +204,7 @@ private fun QuestionItem(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 12.dp) // Thêm padding để nội dung không bị sát viền
+            .padding(horizontal = 16.dp, vertical = 12.dp)
     ) {
         Text(
             text = "Câu ${questionIndex}: ${question.questionText}",
@@ -199,7 +223,6 @@ private fun QuestionItem(
                 onAnswerChange = onAnswerChange
             )
         } else {
-            // ✅ Đã cập nhật lại logic của MultipleChoice như phiên bản gốc
             MultipleChoiceOriginalStyle(
                 choices = questionWithChoices.choices,
                 answer = answer,
@@ -255,12 +278,9 @@ private fun FillInTheBlank(
     }
 }
 
-// ✅ COMPOSABLE VỚI PHONG CÁCH GỐC
-
-
 @Composable
 private fun MultipleChoiceOriginalStyle(
-    choices: List<Choices>, // ✅ Sửa lại kiểu dữ liệu từ Choices -> Choice
+    choices: List<Choices>,
     answer: String?,
     enabled: Boolean,
     result: AnswerResult?,
@@ -269,24 +289,24 @@ private fun MultipleChoiceOriginalStyle(
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         choices.forEach { choice ->
-            val isSelected = answer == choice.choiceId.toString()
+            val isSelected = answer.equals(choice.choiceText, ignoreCase = true)
 
             val choiceState = if (result == null) {
                 ChoiceState.NEUTRAL
             } else {
-                val isThisChoiceCorrect = result.correctAnswer == choice.choiceId.toString()
+                val isThisChoiceCorrect = result.correctAnswer.equals(choice.choiceText, ignoreCase = true)
+                val wasThisChoiceSelectedByUser = result.userAnswer.equals(choice.choiceText, ignoreCase = true)
+
                 when {
-                    isSelected && isThisChoiceCorrect -> ChoiceState.CORRECT
-                    isSelected && !isThisChoiceCorrect -> ChoiceState.INCORRECT
-                    !isSelected && isThisChoiceCorrect -> ChoiceState.SHOW_CORRECT_ANSWER
+                    wasThisChoiceSelectedByUser && isThisChoiceCorrect -> ChoiceState.CORRECT
+                    wasThisChoiceSelectedByUser && !isThisChoiceCorrect -> ChoiceState.INCORRECT
+                    !wasThisChoiceSelectedByUser && isThisChoiceCorrect -> ChoiceState.SHOW_CORRECT_ANSWER
                     else -> ChoiceState.NEUTRAL
                 }
             }
 
-            // Lấy các thuộc tính giao diện (màu nền, màu nội dung, màu viền, icon)
             val (backgroundColor, contentColor, borderColor, icon) = getChoiceAppearanceWithBorder(choiceState, isSelected)
 
-            // Animate các thay đổi màu sắc
             val animatedBackgroundColor by animateColorAsState(backgroundColor, tween(300), "bg-color")
             val animatedContentColor by animateColorAsState(contentColor, tween(300), "content-color")
             val animatedBorderColor by animateColorAsState(borderColor, tween(300), "border-color")
@@ -296,26 +316,21 @@ private fun MultipleChoiceOriginalStyle(
                     .fillMaxWidth()
                     .animateContentSize()
                     .clip(RoundedCornerShape(12.dp))
-                    // ✅ ÁP DỤNG VIỀN Ở ĐÂY
                     .border(
-                        // Viền dày hơn khi được chọn hoặc đã có kết quả để làm nổi bật
                         width = if (isSelected || choiceState != ChoiceState.NEUTRAL) 2.dp else 1.dp,
                         color = animatedBorderColor,
                         shape = RoundedCornerShape(12.dp)
                     )
-                    .background(animatedBackgroundColor) // Nền có thể có một lớp màu rất nhạt
+                    .background(animatedBackgroundColor)
                     .clickable(enabled = enabled) {
-                        onAnswerChange(
-                            questionId,
-                            choice.choiceId.toString()
-                        )
+                        onAnswerChange(questionId, choice.choiceText)
                     }
                     .padding(horizontal = 16.dp, vertical = 14.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 RadioButton(
                     selected = isSelected,
-                    onClick = { if (enabled) onAnswerChange(questionId, choice.choiceId.toString()) },
+                    onClick = { if (enabled) onAnswerChange(questionId, choice.choiceText) },
                     enabled = enabled,
                     colors = RadioButtonDefaults.colors(
                         selectedColor = animatedContentColor,
@@ -346,10 +361,6 @@ private fun MultipleChoiceOriginalStyle(
     }
 }
 
-/**
- * Hàm helper để quản lý giao diện, trả về bộ 4 giá trị.
- * Trả về: Quadruple(Màu nền, Màu nội dung, Màu viền, Icon hiển thị)
- */
 @Composable
 private fun getChoiceAppearanceWithBorder(
     state: ChoiceState,
@@ -359,26 +370,24 @@ private fun getChoiceAppearanceWithBorder(
     val incorrectColor = MaterialTheme.colorScheme.error
 
     return when (state) {
-        // Sau khi nộp bài
         ChoiceState.CORRECT -> Quadruple(
-            correctColor.copy(alpha = 0.08f), // Nền xanh rất nhạt
-            correctColor,                      // Chữ/Icon màu xanh
-            correctColor,                      // Viền màu xanh
+            correctColor.copy(alpha = 0.08f),
+            correctColor,
+            correctColor,
             Icons.Default.Check
         )
         ChoiceState.INCORRECT -> Quadruple(
-            incorrectColor.copy(alpha = 0.08f), // Nền đỏ rất nhạt
-            incorrectColor,                       // Chữ/Icon màu đỏ
-            incorrectColor,                       // Viền màu đỏ
+            incorrectColor.copy(alpha = 0.08f),
+            incorrectColor,
+            incorrectColor,
             Icons.Default.Close
         )
         ChoiceState.SHOW_CORRECT_ANSWER -> Quadruple(
-            Color.Transparent,                    // Không nền
-            MaterialTheme.colorScheme.onSurface,  // Chữ màu bình thường
-            correctColor,                         // Viền màu xanh để chỉ ra đáp án đúng
-            Icons.Default.Check                   // Vẫn có icon để xác nhận
+            Color.Transparent,
+            MaterialTheme.colorScheme.onSurface,
+            correctColor,
+            Icons.Default.Check
         )
-        // Khi chưa nộp bài
         ChoiceState.NEUTRAL -> {
             val content = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
             val border = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline
@@ -388,10 +397,7 @@ private fun getChoiceAppearanceWithBorder(
     }
 }
 
-// Bạn cần thêm class Quadruple này vào file, hoặc dùng List/Array nếu muốn.
-// Dùng data class giúp code dễ đọc hơn.
 data class Quadruple<A, B, C, D>(val first: A, val second: B, val third: C, val fourth: D)
-
 
 @Composable
 fun AudioPlayerFromAssets(fileName: String, modifier: Modifier = Modifier) {
@@ -401,7 +407,6 @@ fun AudioPlayerFromAssets(fileName: String, modifier: Modifier = Modifier) {
     var currentPosition by remember { mutableIntStateOf(0) }
     var duration by remember { mutableIntStateOf(0) }
 
-    // Hàm seek an toàn
     val seekTo: (Int) -> Unit = { position ->
         val newPosition = position.coerceIn(0, duration)
         currentPosition = newPosition
@@ -418,7 +423,7 @@ fun AudioPlayerFromAssets(fileName: String, modifier: Modifier = Modifier) {
                 }
                 setOnCompletionListener {
                     isPlaying = false
-                    currentPosition = 0 // Quay về đầu khi kết thúc
+                    currentPosition = 0
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -433,32 +438,27 @@ fun AudioPlayerFromAssets(fileName: String, modifier: Modifier = Modifier) {
         }
     }
 
-    // Coroutine để cập nhật vị trí hiện tại của thanh trượt
     LaunchedEffect(isPlaying) {
         if (isPlaying) {
             while (isActive) {
                 currentPosition = mediaPlayer?.currentPosition ?: 0
-                delay(200L) // Cập nhật 5 lần mỗi giây
+                delay(200L)
             }
         }
     }
 
-    // --- GIAO DIỆN ĐÃ THIẾT KẾ LẠI ---
     Column(
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 24.dp, vertical = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Thanh Slider
         Slider(
             value = currentPosition.toFloat(),
             onValueChange = { newPosition ->
-                // Chỉ cập nhật UI, không seek mediaPlayer ở đây để tránh giật
                 currentPosition = newPosition.toInt()
             },
             onValueChangeFinished = {
-                // Seek mediaPlayer khi người dùng đã kéo xong
                 mediaPlayer?.seekTo(currentPosition)
             },
             valueRange = 0f..duration.toFloat().coerceAtLeast(1f),
@@ -470,11 +470,10 @@ fun AudioPlayerFromAssets(fileName: String, modifier: Modifier = Modifier) {
             )
         )
 
-        // Thời gian
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 8.dp), // Thêm padding để khớp với lề của slider
+                .padding(horizontal = 8.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
@@ -491,13 +490,11 @@ fun AudioPlayerFromAssets(fileName: String, modifier: Modifier = Modifier) {
 
         Spacer(Modifier.height(8.dp))
 
-        // Các nút điều khiển
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Nút Tua Lại 10s
             IconButton(onClick = { seekTo(currentPosition - 10000) }) {
                 Icon(
                     imageVector = Icons.Filled.Replay5,
@@ -507,7 +504,6 @@ fun AudioPlayerFromAssets(fileName: String, modifier: Modifier = Modifier) {
                 )
             }
 
-            // Nút Play/Pause chính
             IconButton(
                 onClick = {
                     mediaPlayer?.let { mp ->
@@ -536,7 +532,6 @@ fun AudioPlayerFromAssets(fileName: String, modifier: Modifier = Modifier) {
                 }
             }
 
-            // Nút Tua Tới 10s
             IconButton(onClick = { seekTo(currentPosition + 10000) }) {
                 Icon(
                     imageVector = Icons.Filled.Forward5,

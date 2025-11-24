@@ -1,6 +1,7 @@
 package com.example.relisapp.phat.data
 
 import android.content.Context
+import android.util.Log
 import androidx.room.*
 import com.example.relisapp.phat.dao.CategoryDao
 import com.example.relisapp.phat.dao.ChoiceDao
@@ -31,7 +32,7 @@ import com.example.relisapp.phat.entity.Results
         Choices::class, Results::class, Progress::class, FavoriteLessons::class,
         Likes::class, Comments::class, Notifications::class
     ],
-    version = 2
+    version = 1
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
@@ -47,23 +48,44 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun notificationDao(): NotificationDao
 
     companion object {
+        private const val DATABASE_NAME = "relis_database" // Đặt tên DB vào một hằng số
+
         @Volatile
         private var INSTANCE: AppDatabase? = null
 
         fun getDatabase(context: Context): AppDatabase {
+            // Sử dụng double-checked locking để đảm bảo an toàn và hiệu quả
             return INSTANCE ?: synchronized(this) {
-                val instance = Room.databaseBuilder(
-                    context.applicationContext,
-                    AppDatabase::class.java,
-                    "relis_database" // tên database trong app
-                )
-                    .createFromAsset("DB_ReLis_V1.db") // file trong assets/
-                    .fallbackToDestructiveMigration(true) // Room sẽ recreate DB nếu schema không khớp
-                    .build()
+                val instance = buildDatabase(context) // Gọi hàm build đã được tách ra
                 INSTANCE = instance
                 instance
             }
         }
 
+        private fun buildDatabase(context: Context): AppDatabase {
+            val dbFile = context.getDatabasePath(DATABASE_NAME)
+
+            val builder = Room.databaseBuilder(
+                context.applicationContext,
+                AppDatabase::class.java,
+                DATABASE_NAME
+            )
+
+            if (!dbFile.exists()) {
+                // [QUAN TRỌNG] Chỉ gọi createFromAsset KHI VÀ CHỈ KHI file DB chưa tồn tại
+                builder.createFromAsset("DB_ReLis_V1.db")
+                // Log để biết rằng DB được tạo từ Asset
+                Log.i("AppDatabase", "Database created from asset.")
+            } else {
+                // Log để biết rằng DB đã tồn tại và được mở lại
+                Log.i("AppDatabase", "Existing database opened.")
+            }
+
+            // Bạn vẫn có thể giữ fallbackToDestructiveMigration ở đây
+            // Nó sẽ chỉ kích hoạt khi bạn tăng version và DB đã tồn tại
+            builder.fallbackToDestructiveMigration(true)
+
+            return builder.build()
+        }
     }
 }

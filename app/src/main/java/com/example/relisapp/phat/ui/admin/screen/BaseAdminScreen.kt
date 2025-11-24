@@ -23,8 +23,9 @@ import com.example.relisapp.R
 @Composable
 fun BaseAdminScreen(
     title: String,
-    // Optional: Parameter to identify current screen for highlighting
     currentScreen: String = "",
+    // [THÊM MỚI 1/3] Thêm hành động cho Dashboard
+    onDashboard: () -> Unit,
     onManageCategories: () -> Unit,
     onManageLessons: () -> Unit,
     onManageUsers: () -> Unit,
@@ -35,7 +36,6 @@ fun BaseAdminScreen(
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
-    // Helper function to close drawer and perform action
     fun onNavClick(action: () -> Unit) {
         scope.launch {
             drawerState.close()
@@ -49,14 +49,12 @@ fun BaseAdminScreen(
             ModalDrawerSheet(
                 drawerContainerColor = MaterialTheme.colorScheme.surface,
                 drawerContentColor = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.width(300.dp) // Moderate menu width
+                modifier = Modifier.width(300.dp)
             ) {
-                // 1. Menu Header (Admin Info)
                 AdminDrawerHeader()
 
                 HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
-                // 2. Menu Items (Using M3 NavigationDrawerItem)
                 Column(modifier = Modifier.padding(horizontal = 12.dp)) {
                     Text(
                         text = "Management",
@@ -65,10 +63,17 @@ fun BaseAdminScreen(
                         color = MaterialTheme.colorScheme.primary
                     )
 
+                    // [THÊM MỚI 2/3] Thêm mục Dashboard ở đây
+                    AdminDrawerItem(
+                        label = "Dashboard",
+                        icon = R.drawable.ic_dashboard, // Cần có icon này trong drawable
+                        selected = title == "Dashboard",
+                        onClick = { onNavClick(onDashboard) }
+                    )
+
                     AdminDrawerItem(
                         label = "Categories",
                         icon = R.drawable.ic_category,
-                        // Highlight if title matches (Ensure you pass "Manage Categories" as title)
                         selected = title == "Manage Categories",
                         onClick = { onNavClick(onManageCategories) }
                     )
@@ -94,9 +99,7 @@ fun BaseAdminScreen(
                         onClick = { onNavClick(onFeedback) }
                     )
 
-                    Spacer(modifier = Modifier.weight(1f)) // Push bottom items down
-
-
+                    Spacer(modifier = Modifier.weight(1f))
 
                     HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
@@ -105,29 +108,33 @@ fun BaseAdminScreen(
                         icon = R.drawable.ic_logout,
                         selected = false,
                         onClick = { onNavClick(onLogout) },
-                        color = MaterialTheme.colorScheme.error // Red color for logout
+                        color = MaterialTheme.colorScheme.error
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                 }
             }
         }
     ) {
+        // ... Phần Scaffold và các hàm helper giữ nguyên như cũ
         Scaffold(
             topBar = {
                 CenterAlignedTopAppBar(
                     title = {
                         Text(
                             text = title,
-                            style = MaterialTheme.typography.titleMedium.copy(
-                                fontWeight = FontWeight.Bold
-                            )
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold
                         )
                     },
                     navigationIcon = {
-                        IconButton(onClick = { scope.launch { drawerState.open() } }) {
+                        IconButton(
+                            onClick = { scope.launch { drawerState.open() } },
+                            modifier = Modifier.size(48.dp)
+                        ) {
                             Icon(
                                 imageVector = Icons.Default.Menu,
-                                contentDescription = "Menu"
+                                contentDescription = "Menu",
+                                modifier = Modifier.size(28.dp)
                             )
                         }
                     },
@@ -136,31 +143,36 @@ fun BaseAdminScreen(
                         titleContentColor = MaterialTheme.colorScheme.primary,
                         navigationIconContentColor = MaterialTheme.colorScheme.onSurface
                     ),
-                    // Right action (e.g., small avatar or notification)
                     actions = {
-                        IconButton(onClick = { /* Todo: Profile setting */ }) {
+                        IconButton(
+                            onClick = { /* Todo: Profile setting */ },
+                            modifier = Modifier.size(48.dp)
+                        ) {
                             Icon(
                                 imageVector = Icons.Outlined.AccountCircle,
                                 contentDescription = "Profile",
-                                tint = MaterialTheme.colorScheme.primary
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.size(30.dp)
                             )
                         }
                     }
                 )
             }
         ) { paddingValues ->
-            // Background for main content to separate visual layers
             Surface(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues),
                 color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
             ) {
-                content(Modifier.padding(16.dp)) // Default padding for inner content
+                content(Modifier)
             }
         }
     }
 }
+
+// ... Các hàm AdminDrawerHeader và AdminDrawerItem giữ nguyên
+
 
 // --- HELPER COMPONENTS FOR CLEAN CODE ---
 

@@ -58,3 +58,12 @@ class ResultViewModelFactory(private val repo: ResultRepository) : ViewModelProv
         throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
     }
 }
+class QuestionViewModelFactory(private val repository: QuestionRepository) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(QuestionViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return QuestionViewModel(repository) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
+    }
+}
