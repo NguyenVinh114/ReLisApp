@@ -30,7 +30,7 @@ fun AdminDashboardScreenContent(
     onManageCategories: () -> Unit,
     onManageLessons: () -> Unit,
     onManageUsers: () -> Unit,
-    onFeedback: () -> Unit,
+    onManageLC: () -> Unit,
     onLogout: () -> Unit
 ) {
     val gradientBrush = Brush.verticalGradient(
@@ -43,121 +43,110 @@ fun AdminDashboardScreenContent(
         endY = 800.0f
     )
 
+    // ***** SỬA ĐỔI CẤU TRÚC CHÍNH *****
+    // Sử dụng một Column không cuộn làm gốc.
     Column(
         modifier = modifier
             .fillMaxSize()
             .background(gradientBrush)
-            .verticalScroll(rememberScrollState()) // Giữ lại cuộn cho toàn màn hình
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // --- PHẦN HEADER ---
-        AdminInfoCard()
-        Spacer(Modifier.height(16.dp))
-        Text(
-            text = "Welcome Back, Admin!",
-            style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.align(Alignment.Start)
-        )
-        Spacer(Modifier.height(24.dp))
-
-        // --- PHẦN THỐNG KÊ (STATS) ---
-        Text(
-            text = "Overview",
-            style = MaterialTheme.typography.headlineSmall,
-            color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.align(Alignment.Start)
-        )
-        Spacer(Modifier.height(16.dp))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            StatCard(
-                label = "Total Users",
-                value = "1,250",
-                icon = Icons.Default.People,
-                modifier = Modifier.weight(1f)
-            )
-            StatCard(
-                label = "Total Lessons",
-                value = "320",
-                icon = Icons.Default.LibraryBooks,
-                modifier = Modifier.weight(1f)
-            )
-        }
-        Spacer(Modifier.height(24.dp))
-
-        // --- PHẦN QUẢN LÝ ---
-        Text(
-            text = "System Administration",
-            style = MaterialTheme.typography.headlineSmall,
-            color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.align(Alignment.Start)
-        )
-        Spacer(Modifier.height(16.dp))
-
-        // ***** SỬA LỖI Ở ĐÂY: DÙNG 2 ROW THAY VÌ LAZYVERTICALGRID *****
+        // --- PHẦN NỘI DUNG CÓ THỂ CUỘN ---
+        // Column này chứa tất cả nội dung và có thể cuộn.
+        // Modifier.weight(1f) làm cho nó chiếm hết không gian còn lại.
         Column(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(16.dp) // Khoảng cách giữa 2 hàng
+            modifier = Modifier
+                .weight(1f)
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp), // Chỉ padding ngang ở đây
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Hàng thứ nhất
+            Spacer(Modifier.height(16.dp)) // Thêm padding top cho nội dung cuộn
+
+            // --- PHẦN HEADER ---
+            AdminInfoCard()
+            Spacer(Modifier.height(16.dp))
+            Text(
+                text = "Welcome Back, Admin!",
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.align(Alignment.Start)
+            )
+            Spacer(Modifier.height(24.dp))
+
+            // --- PHẦN THỐNG KÊ (STATS) ---
+            Text(
+                text = "Overview",
+                style = MaterialTheme.typography.headlineSmall,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.align(Alignment.Start)
+            )
+            Spacer(Modifier.height(16.dp))
             Row(
-                horizontalArrangement = Arrangement.spacedBy(16.dp), // Khoảng cách giữa 2 cột
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Box(modifier = Modifier.weight(1f)) {
-                    GridDashboardCard(
-                        title = "Categories",
-                        iconRes = R.drawable.ic_category,
-                        backgroundColor = MaterialTheme.colorScheme.primary,
-                        onClick = onManageCategories
-                    )
-                }
-                Box(modifier = Modifier.weight(1f)) {
-                    GridDashboardCard(
-                        title = "Lessons",
-                        iconRes = R.drawable.ic_assignment,
-                        backgroundColor = MaterialTheme.colorScheme.secondary,
-                        onClick = onManageLessons
-                    )
-                }
+                StatCard(
+                    label = "Total Users",
+                    value = "1,250",
+                    icon = Icons.Default.People,
+                    modifier = Modifier.weight(1f)
+                )
+                StatCard(
+                    label = "Total Lessons",
+                    value = "320",
+                    icon = Icons.Default.LibraryBooks,
+                    modifier = Modifier.weight(1f)
+                )
             }
-            // Hàng thứ hai
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier.fillMaxWidth()
+            Spacer(Modifier.height(24.dp))
+
+            // --- PHẦN QUẢN LÝ ---
+            Text(
+                text = "System Administration",
+                style = MaterialTheme.typography.headlineSmall,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.align(Alignment.Start)
+            )
+            Spacer(Modifier.height(16.dp))
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Box(modifier = Modifier.weight(1f)) {
-                    GridDashboardCard(
-                        title = "Users",
-                        iconRes = R.drawable.ic_user,
-                        backgroundColor = Color(0xFF009688),
-                        onClick = onManageUsers
-                    )
-                }
-                Box(modifier = Modifier.weight(1f)) {
-                    GridDashboardCard(
-                        title = "Feedback",
-                        iconRes = R.drawable.ic_feedback,
-                        backgroundColor = Color(0xFFFF5722),
-                        onClick = onFeedback
-                    )
-                }
+                RowDashboardCard(
+                    title = "Manage Categories",
+                    iconRes = R.drawable.ic_category,
+                    backgroundColor = MaterialTheme.colorScheme.primary,
+                    onClick = onManageCategories
+                )
+                RowDashboardCard(
+                    title = "Manage Lessons",
+                    iconRes = R.drawable.ic_assignment,
+                    backgroundColor = MaterialTheme.colorScheme.secondary,
+                    onClick = onManageLessons
+                )
+                RowDashboardCard(
+                    title = "Manage Users",
+                    iconRes = R.drawable.ic_user,
+                    backgroundColor = Color(0xFF009688),
+                    onClick = onManageUsers
+                )
+                RowDashboardCard(
+                    title = "Comments & Likes",
+                    iconRes = R.drawable.ic_feedback,
+                    backgroundColor = Color(0xFFFF5722),
+                    onClick = onManageLC
+                )
             }
+            Spacer(Modifier.height(16.dp)) // Thêm padding bottom cho nội dung cuộn
         }
 
-
-        // Spacer(modifier = Modifier.weight(1f)) // Không cần thiết nữa vì không dùng LazyColumn/LazyGrid
-        Spacer(modifier = Modifier.height(32.dp))
-
-        // --- NÚT LOGOUT ---
+        // --- NÚT LOGOUT CỐ ĐỊNH ---
+        // Nút này nằm ngoài Column cuộn, nên sẽ luôn ở dưới cùng.
         Button(
             onClick = onLogout,
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(16.dp) // Thêm padding cho nút
                 .height(56.dp),
             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
             shape = MaterialTheme.shapes.medium
@@ -172,7 +161,48 @@ fun AdminDashboardScreenContent(
     }
 }
 
-// Composable MỚI cho thẻ thống kê
+
+// --- CÁC COMPOSABLE KHÁC GIỮ NGUYÊN (RowDashboardCard, StatCard, AdminInfoCard) ---
+
+@Composable
+fun RowDashboardCard(
+    title: String,
+    iconRes: Int,
+    backgroundColor: Color,
+    onClick: () -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(80.dp) // Chiều cao cố định cho mỗi hàng
+            .clickable(onClick = onClick),
+        colors = CardDefaults.cardColors(containerColor = backgroundColor),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        shape = MaterialTheme.shapes.large
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 20.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Start // Căn các mục về bên trái
+        ) {
+            Image(
+                painter = painterResource(id = iconRes),
+                contentDescription = title,
+                modifier = Modifier.size(32.dp) // Kích thước icon
+            )
+            Spacer(Modifier.width(16.dp))
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = Color.White
+            )
+        }
+    }
+}
+
 @Composable
 fun StatCard(label: String, value: String, icon: ImageVector, modifier: Modifier = Modifier) {
     Card(
@@ -198,49 +228,6 @@ fun StatCard(label: String, value: String, icon: ImageVector, modifier: Modifier
     }
 }
 
-
-// Composable MỚI cho thẻ dạng lưới
-@Composable
-fun GridDashboardCard(
-    title: String,
-    iconRes: Int,
-    backgroundColor: Color,
-    onClick: () -> Unit
-) {
-    Card(
-        modifier = Modifier
-            .aspectRatio(1f) // Giữ cho thẻ luôn vuông
-            .fillMaxWidth() // Thêm fillMaxWidth để nó lấp đầy Box cha
-            .clickable(onClick = onClick),
-        colors = CardDefaults.cardColors(containerColor = backgroundColor),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        shape = MaterialTheme.shapes.large
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Image(
-                painter = painterResource(id = iconRes),
-                contentDescription = title,
-                modifier = Modifier.size(40.dp)
-            )
-            Spacer(Modifier.height(12.dp))
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = Color.White
-            )
-        }
-    }
-}
-
-
-// Composable cũ AdminInfoCard có thể giữ nguyên
 @Composable
 fun AdminInfoCard() {
     Card(
@@ -252,7 +239,7 @@ fun AdminInfoCard() {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(20.dp),
+                .padding(15.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(

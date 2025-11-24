@@ -26,7 +26,9 @@ fun AdminDashboardScreenContent(
     modifier: Modifier = Modifier,
     onLogout: () -> Unit,
     onManageUsers: () -> Unit,
-    onManageLC: () -> Unit
+    onManageLC: () -> Unit,
+    onManageCategories: () -> Unit,
+    onManageLessons: () -> Unit,
 ) {
     Column(
         modifier = modifier
@@ -54,14 +56,14 @@ fun AdminDashboardScreenContent(
             title = "Manage Categories",
             iconRes = R.drawable.ic_category,
             backgroundColor = Color(0xFF3F51B5),
-            onClick = {}
+            onClick = {onManageCategories}
         )
 
         DashboardCard(
             title = "Manage Lessons",
             iconRes = R.drawable.ic_assignment,
             backgroundColor = Color(0xFF2196F3),
-            onClick = {}
+            onClick = {onManageLessons}
         )
 
         DashboardCard(

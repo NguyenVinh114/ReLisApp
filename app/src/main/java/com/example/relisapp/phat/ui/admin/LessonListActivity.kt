@@ -9,6 +9,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.ViewModelProvider
+import com.example.relisapp.nam.ui.screens.ProfileActivity
 import com.example.relisapp.phat.data.AppDatabase
 import com.example.relisapp.phat.repository.CategoryRepository
 import com.example.relisapp.phat.repository.LessonRepository
@@ -57,6 +58,9 @@ class LessonListActivity : ComponentActivity() {
                     onLogout = {
                         showToast("Logging out...")
                         finishAffinity()
+                    },
+                    onIconUserClick = {
+                        startActivity(Intent(this, ProfileActivity::class.java))
                     }
                 ) { modifier ->
                     LessonListScreen(
