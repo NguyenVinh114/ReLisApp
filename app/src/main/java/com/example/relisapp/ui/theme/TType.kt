@@ -9,7 +9,7 @@ import androidx.compose.ui.unit.sp
 // Định nghĩa một đối tượng Typography.
 // Bạn có thể tùy chỉnh từng kiểu văn bản theo ý muốn.
 // Ví dụ: thay đổi font chữ, kích thước, độ đậm...
-val Typography = Typography(
+val  PhatTypography = Typography(
     // Dùng cho các tiêu đề rất lớn, thường là tiêu đề màn hình (ít dùng)
     displayLarge = TextStyle(
         fontFamily = FontFamily.Default,
