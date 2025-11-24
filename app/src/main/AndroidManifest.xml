@@ -16,10 +16,10 @@
         <activity
             android:name=".MainActivity"
             android:exported="true">
-            <intent-filter>
+          <!--  <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            </intent-filter>-->
         </activity>
 
         <activity android:name=".ui.screens.LoginActivity" android:exported="false" />
@@ -51,6 +51,29 @@
         <activity android:name=".phat.ui.admin.QuestionListActivity"
             android:exported="false"/>
 
+        <activity android:name=".nam.MainActivity"/>
+        <activity android:name=".nam.ui.screens.AdminDashboardActivity"/>
+        <activity android:name=".nam.ui.screens.AdminDashboardActivity2"/>
+        <activity android:name=".nam.ui.screens.LoginActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".nam.ui.screens.AdminActivity"/>
+        <activity android:name=".nam.ui.screens.ChangeForgotPasswordActivity"/>
+        <activity android:name=".nam.ui.screens.ChangePassWordActivity"/>
+        <activity android:name=".nam.ui.screens.ChangeRoleActivity"/>
+        <activity android:name=".nam.ui.screens.ForgotPasswordOtpVerificationActivity"/>
+        <activity android:name=".nam.ui.screens.ForgotPasswordPhoneEntryActivity"/>
+        <activity android:name=".nam.ui.screens.InfoProfileActivity"/>
+        <activity android:name=".nam.ui.screens.ProfileActivity"/>
+        <activity android:name=".nam.ui.screens.SignupActivity"/>
+        <activity android:name=".nam.ui.screens.StartActivity"/>
+        <activity android:name=".nam.ui.screens.UserDetailActivity"/>
+        <activity android:name=".nam.ui.screens.UserListActivity"/>
+        <activity android:name=".nam.ui.screens.VerificationActivity"/>
     </application>
 
 </manifest>

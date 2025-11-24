@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.example.relisapp" />
+                  <option name="mobileSdkAppId" value="1:467372006896:android:25e487fcda653abcd05135" />
+                  <option name="projectId" value="my-app-relis" />
+                  <option name="projectNumber" value="467372006896" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

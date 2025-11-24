@@ -2,6 +2,7 @@
 
 package com.example.relisapp.phat.ui.admin
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -11,6 +12,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.relisapp.nam.ui.screens.ProfileActivity
 import com.example.relisapp.phat.data.AppDatabase
 import com.example.relisapp.phat.repository.QuestionRepository
 import com.example.relisapp.phat.ui.admin.screen.AddEditQuestionScreen
@@ -59,6 +61,9 @@ class AddEditQuestionActivity : ComponentActivity() {
                         onManageUsers = { /* TODO */ },
                         onFeedback = { /* TODO */ },
                         onLogout = { /* TODO */ },
+                        onIconUserClick = {
+                            startActivity(Intent(this, ProfileActivity::class.java))
+                        }
                     ) { modifier ->
                         AddEditQuestionScreen(
                             modifier = modifier,

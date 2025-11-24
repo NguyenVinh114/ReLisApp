@@ -157,7 +157,7 @@ class InfoProfileActivity : ComponentActivity() {
     }
 }
 
-private fun showToast(context: android.content.Context, msg: String) {
+fun showToast(context: android.content.Context, msg: String) {
     Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
 }
 

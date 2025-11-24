@@ -31,6 +31,7 @@ fun BaseAdminScreen(
     onManageUsers: () -> Unit,
     onFeedback: () -> Unit,
     onLogout: () -> Unit,
+    onIconUserClick:() ->Unit,
     content: @Composable (Modifier) -> Unit
 ) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -95,7 +96,7 @@ fun BaseAdminScreen(
                     AdminDrawerItem(
                         label = "Feedback",
                         icon = R.drawable.ic_feedback,
-                        selected = title == "Feedback",
+                        selected = title == "Comments & Likes",
                         onClick = { onNavClick(onFeedback) }
                     )
 
@@ -145,7 +146,7 @@ fun BaseAdminScreen(
                     ),
                     actions = {
                         IconButton(
-                            onClick = { /* Todo: Profile setting */ },
+                            onClick = onIconUserClick,
                             modifier = Modifier.size(48.dp)
                         ) {
                             Icon(
