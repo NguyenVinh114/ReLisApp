@@ -16,7 +16,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.relisapp.nam.MainActivity
+import androidx.lifecycle.lifecycleScope
+import com.example.relisapp.MainActivity
 import com.example.relisapp.R
 import com.example.relisapp.nam.data.local.SessionManager
 import com.example.relisapp.nam.notification.DailyReminderWorker
@@ -28,22 +29,42 @@ import java.util.concurrent.TimeUnit
 import androidx.work.WorkManager
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
+import com.example.relisapp.nam.database.AppDatabase
+import kotlinx.coroutines.launch
 
 
 class StartActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // ⭐ Auto schedule daily notification
+        // Tự động tạo thông báo hằng ngày
         scheduleDailyReminder()
 
+
+        // Nếu đã đăng nhập → kiểm tra role trong DB
         val session = SessionManager(this)
+
         if (session.isLoggedIn()) {
-            startActivity(Intent(this, MainActivity::class.java))
-            finish()
-            return
+
+            val role = session.getRole()
+
+            if (role == "admin") {
+                startActivity(Intent(this, AdminDashboardActivity2::class.java))
+                finish()
+                return
+            } else if (role == "user") {
+                startActivity(Intent(this, MainActivity::class.java))
+                finish()
+                return
+            }
         }
 
+
+        // Nếu chưa đăng nhập → vào màn hình Start bình thường
+        showStartScreen()
+    }
+
+    private fun showStartScreen() {
         setContent {
             LearnTheme {
                 StartScreen(
@@ -62,19 +83,19 @@ class StartActivity : ComponentActivity() {
         val now = Calendar.getInstance()
         val target = Calendar.getInstance()
 
-        // ⏰ Hẹn lúc 8:00 sáng
         target.set(Calendar.HOUR_OF_DAY, 8)
         target.set(Calendar.MINUTE, 0)
         target.set(Calendar.SECOND, 0)
 
-        // Nếu giờ này đã trôi qua → đặt ngày mai
         if (target.before(now)) {
             target.add(Calendar.DAY_OF_MONTH, 1)
         }
 
         val delay = target.timeInMillis - now.timeInMillis
 
-        val request = PeriodicWorkRequestBuilder<DailyReminderWorker>(24, TimeUnit.HOURS)
+        val request = PeriodicWorkRequestBuilder<DailyReminderWorker>(
+            24, TimeUnit.HOURS
+        )
             .setInitialDelay(delay, TimeUnit.MILLISECONDS)
             .build()
 
@@ -85,6 +106,7 @@ class StartActivity : ComponentActivity() {
         )
     }
 }
+
 
 @Composable
 fun StartScreen(
