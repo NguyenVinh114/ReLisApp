@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)   // ✅ Bật KSP
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -79,5 +80,17 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended-android:1.7.8") // Thay 1.6.7 bằng phiên bản Compose của bạn
 
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.10.0") // Hoặc phiên bản mới hơn
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
+
+    implementation("com.google.android.gms:play-services-auth:21.2.0")
+    implementation("com.google.android.gms:play-services-auth-api-phone:18.1.0")
+
+    implementation("com.google.android.gms:play-services-safetynet:18.1.0")
+
+    implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
+    implementation("com.google.firebase:firebase-analytics-ktx")
+    implementation("com.google.firebase:firebase-auth-ktx")
+
+    implementation("androidx.work:work-runtime-ktx:2.9.0")
 
 }
