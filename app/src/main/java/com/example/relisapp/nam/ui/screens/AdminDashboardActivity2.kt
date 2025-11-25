@@ -13,6 +13,11 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.relisapp.nam.data.local.SessionManager
 import com.example.relisapp.nam.di.ViewModelProviderFactory
 import com.example.relisapp.nam.viewmodel.AuthViewModel
+import com.example.relisapp.phat.ui.admin.CategoryListActivity
+import com.example.relisapp.phat.ui.admin.LessonListActivity
+import com.example.relisapp.phat.ui.admin.screen.BaseAdminScreen
+import com.example.relisapp.phat.ui.theme.AdminProTheme
+import com.example.relisapp.phat.ui.admin.screen.AdminDashboardScreenContent
 
 class AdminDashboardActivity2 : ComponentActivity() {
 
@@ -37,21 +42,28 @@ class AdminDashboardActivity2 : ComponentActivity() {
         authViewModel = ViewModelProvider(this, factory)[AuthViewModel::class.java]
 
         setContent {
-            MaterialTheme {
+            AdminProTheme {
 
                 // ⭐ State đúng chuẩn Compose
                 var currentTab by remember { mutableStateOf(UserTab.HOME) }
 
-                BaseUserScreen(
+                BaseAdminScreen (
                     title = "Admin Dashboard",
-
-                    currentTab = currentTab,
-
-                    onTabSelected = { selected ->
-                        currentTab = selected
+                    currentScreen = "Admin Dashboard", // Thêm để highlight menu
+                    onDashboard = {},
+                    onManageCategories = {
+                        // Tạm thời trỏ đến AddCategory, nên đổi thành CategoryListActivity sau
+                        startActivity(Intent(this, CategoryListActivity::class.java))
                     },
-
-                    onUserIconClick = {
+                    onManageLessons = {
+                        startActivity(Intent(this, LessonListActivity::class.java))
+                    },
+                    onManageUsers = {
+                        startActivity(Intent(this, UserListActivity::class.java))
+                    },
+                    onFeedback = {
+                        startActivity(Intent(this, AdminDashboardActivity::class.java))},
+                    onIconUserClick = {
                         // MỞ TRANG PROFILE ADMIN
                         startActivity(Intent(this, ProfileActivity::class.java))
                     },
@@ -59,11 +71,12 @@ class AdminDashboardActivity2 : ComponentActivity() {
                     // ⭐ LOGOUT TRONG DRAWER
                     onLogout = {
                         handleLogout()   // ⬅️ GỌI LOGOUT THẬT
-                    }
+                    },
+
                 ) { innerPadding ->
 
-                    AdminDashboardScreenContent(
-                        modifier = Modifier.padding(innerPadding),
+                    com.example.relisapp.phat.ui.admin.screen.AdminDashboardScreenContent (
+                        modifier = Modifier,
 
                         onLogout = {
                             handleLogout()
@@ -75,7 +88,13 @@ class AdminDashboardActivity2 : ComponentActivity() {
 
                         onManageLC = {
                             startActivity(Intent(this, AdminDashboardActivity::class.java))
-                        }
+                        },
+                        onManageCategories = {
+                            startActivity(Intent(this, CategoryListActivity()::class.java))
+                        },
+                        onManageLessons = {
+                            startActivity(Intent(this, LessonListActivity::class.java))
+                        },
                     )
                 }
             }

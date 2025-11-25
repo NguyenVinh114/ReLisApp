@@ -9,6 +9,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.ViewModelProvider
+import com.example.relisapp.nam.ui.screens.ProfileActivity
 import com.example.relisapp.phat.data.AppDatabase
 import com.example.relisapp.phat.repository.CategoryRepository
 import com.example.relisapp.phat.ui.admin.screen.AddEditCategoryScreen
@@ -61,6 +62,9 @@ class AddEditCategoryActivity : ComponentActivity() {
                     onLogout = {
                         showToast("Logging out...")
                         finishAffinity()
+                    },
+                    onIconUserClick = {
+                        startActivity(Intent(this, ProfileActivity::class.java))
                     }
                 ) { modifierFromBase ->
                     // Sử dụng màn hình AddEditCategoryScreen

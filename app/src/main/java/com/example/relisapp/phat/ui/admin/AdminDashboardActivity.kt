@@ -36,7 +36,8 @@ class AdminDashboardActivity : ComponentActivity() {
                     onLogout = {
                         showToast("Logging out...")
                         finishAffinity() // Đóng ứng dụng
-                    }
+                    },
+                    onIconUserClick = {}
                 ) { modifier ->
                     // 3. TRUYỀN TẤT CẢ CÁC HÀM VÀO CONTENT
                     AdminDashboardScreenContent(
@@ -50,8 +51,8 @@ class AdminDashboardActivity : ComponentActivity() {
                         onManageUsers = {
                             showToast("Navigate to Manage Users")
                         },
-                        onFeedback = {
-                            showToast("Navigate to Feedback")
+                        onManageLC = {
+                            showToast("Navigate to Comments & Likes")
                         },
                         onLogout = {
                             showToast("Logging out...")

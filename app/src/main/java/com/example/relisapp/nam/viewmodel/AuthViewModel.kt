@@ -78,9 +78,10 @@ class AuthViewModel(
             }
 
             if (user != null) {
-                sessionManager.saveLogin(user.userId)
+                sessionManager.saveLogin(user.userId, user.role)
                 _loginState.value = LoginState.Success(user)
-            } else {
+            }
+            else {
                 _loginState.value = LoginState.Error("Sai tên đăng nhập hoặc mật khẩu!")
             }
         }
