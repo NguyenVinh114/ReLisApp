@@ -76,7 +76,7 @@ fun AdminProTheme(
 
     MaterialTheme(
         colorScheme = colors,
-        typography = Typography, // Sử dụng typography chung
+        //typography = Typography, // Sử dụng typography chung
         shapes = AdminShapes,       // Sử dụng shapes chung
         content = content
     )

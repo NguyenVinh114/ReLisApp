@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.relisapp">
+
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -61,6 +66,48 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true" />
+        <activity
+            android:name=".nam.MainActivity"
+            android:exported="true"
+            android:label="@string/app_name"/>
+
+        <activity android:name=".nam.ui.screens.LoginActivity" android:exported="false" />
+<!--        <activity android:name=".ui.screens.RegisterActivity" android:exported="false" />-->
+
+        <activity android:name=".phat.ui.admin.AdminDashboardActivity" android:exported="true" />
+        <activity android:name=".phat.ui.admin.AddLessonActivity"/>
+        <activity android:name=".phat.ui.admin.AddEditCategoryActivity"/>
+        <activity android:name=".phat.ui.admin.CategoryListActivity"/>
+        <activity android:name=".phat.ui.user.UserCategoryListActivity" android:exported="true"/>
+        <activity android:name=".phat.ui.user.UserLessonListActivity"/>
+        <activity android:name=".phat.ui.admin.LessonListActivity"/>
+        <activity android:name=".phat.ui.user.UserQuizActivity" android:exported="false" />
+        <activity android:name=".phat.ui.admin.LessonDetailActivity" android:exported="false"/>
+        <activity android:name=".phat.ui.admin.AddEditQuestionActivity" android:exported="false"/>
+        <activity android:name=".phat.ui.admin.QuestionListActivity" android:exported="false"/>
+
+        <activity android:name=".nam.ui.screens.SignupActivity" android:exported="false" />
+<!--        <activity android:name=".nam.ui.screens.LoginActivity" android:exported="false" />-->
+        <activity android:name=".nam.ui.screens.VerificationActivity" android:exported="false" />
+        <activity android:name=".nam.ui.screens.ProfileActivity" android:exported="false" />
+        <activity android:name=".nam.ui.screens.AdminDashboardActivity" android:exported="true" />
+        <activity android:name=".nam.ui.screens.AdminDashboardActivity2" android:exported="true" />
+        <activity android:name=".nam.ui.screens.UserDetailActivity" android:exported="false" />
+        <activity android:name=".nam.ui.screens.UserListActivity" android:exported="true" />
+        <activity android:name=".nam.ui.screens.ChangeRoleActivity" android:exported="false" />
+        <activity android:name=".nam.ui.screens.ChangePassWordActivity" android:exported="false" />
+        <activity android:name=".nam.ui.screens.ForgotPasswordPhoneEntryActivity" android:exported="false" android:windowSoftInputMode="adjustResize"/>
+        <activity android:name=".nam.ui.screens.ForgotPasswordOtpVerificationActivity" android:exported="false" android:windowSoftInputMode="adjustResize"/>
+        <activity android:name=".nam.ui.screens.ChangeForgotPasswordActivity" android:exported="false" android:windowSoftInputMode="adjustResize"/>
+        <activity android:name=".nam.ui.screens.InfoProfileActivity" android:exported="false" />
+
+        <activity android:name=".ui.user.screen.UserCategoryListActivity" android:exported="true"/>
+        <activity android:name=".ui.user.screen.UserLessonListActivity"/>
+        <activity android:name=".ui.user.screen.UserQuizActivity" android:exported="false" />
         <activity android:name=".nam.ui.screens.AdminActivity"/>
         <activity android:name=".nam.ui.screens.ChangeForgotPasswordActivity"/>
         <activity android:name=".nam.ui.screens.ChangePassWordActivity"/>
@@ -76,4 +123,5 @@
         <activity android:name=".nam.ui.screens.VerificationActivity"/>
     </application>
 
+    </application>
 </manifest>

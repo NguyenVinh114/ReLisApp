@@ -3,27 +3,34 @@
 package com.example.relisapp.ui.favorite
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.relisapp.data.local.entity.Lessons // Import Entity Lessons
+import com.example.relisapp.ui.viewmodel.HomeViewModel
+import com.example.relisapp.ui.user.screen.LessonCard
 
 @Composable
-fun FavoriteScreen(onBack: () -> Unit) {
-    val favorites = FavoriteManager.favorites
+fun FavoriteScreen(
+    homeViewModel: HomeViewModel,
+    onBack: () -> Unit,
+    // 1. THÊM THAM SỐ CALLBACK NÀY
+    onLessonClick: (Lessons) -> Unit
+) {
+    val favoriteLessons by homeViewModel.favoriteLessonsDetail.collectAsState()
 
     var isShuffle by remember { mutableStateOf(false) }
-    val displayList = if (isShuffle) favorites.shuffled() else favorites
+    val displayList = if (isShuffle) favoriteLessons.shuffled() else favoriteLessons
 
     Scaffold(
         topBar = {
@@ -31,7 +38,7 @@ fun FavoriteScreen(onBack: () -> Unit) {
                 title = { Text("❤️ Favorite Lessons") },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 },
                 actions = {
@@ -49,7 +56,7 @@ fun FavoriteScreen(onBack: () -> Unit) {
             )
         }
     ) { padding ->
-        if (favorites.isEmpty()) {
+        if (displayList.isEmpty()) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -69,29 +76,20 @@ fun FavoriteScreen(onBack: () -> Unit) {
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 items(displayList) { lesson ->
-                    Card(
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = CardDefaults.cardColors(containerColor = Color.White),
-                        elevation = CardDefaults.cardElevation(3.dp)
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .padding(16.dp)
-                                .fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(lesson, fontSize = 16.sp, fontWeight = FontWeight.Medium)
-                            IconButton(
-                                onClick = { FavoriteManager.removeFavorite(lesson) }
-                            ) {
-                                Icon(Icons.Default.Delete, contentDescription = "Remove")
-                            }
+                    // 2. BỌC LESSON CARD TRONG BOX ĐỂ BẮT SỰ KIỆN CLICK
+                    Box(
+                        modifier = Modifier.clickable {
+                            onLessonClick(lesson) // Gọi hàm khi click vào bài
                         }
+                    ) {
+                        LessonCard(
+                            lesson = lesson,
+                            isFavorite = true,
+                            onToggleFavorite = { homeViewModel.toggleFavorite(lesson.lessonId) }
+                        )
                     }
                 }
             }
         }
     }
 }
-
