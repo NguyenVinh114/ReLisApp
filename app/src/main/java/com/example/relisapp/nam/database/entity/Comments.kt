@@ -5,6 +5,7 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
 @Entity(
+    tableName = "Comments",
     foreignKeys = [
         ForeignKey(
             entity = User::class,
@@ -12,7 +13,12 @@ import androidx.room.PrimaryKey
             childColumns = ["userId"],
             onDelete = ForeignKey.CASCADE
         ),
-        ForeignKey(entity = Lessons::class, parentColumns = ["lessonId"], childColumns = ["lessonId"], onDelete = ForeignKey.CASCADE)
+        ForeignKey(
+            entity = Lessons::class,
+            parentColumns = ["lessonId"],
+            childColumns = ["lessonId"],
+            onDelete = ForeignKey.CASCADE
+        )
     ]
 )
 data class Comments(

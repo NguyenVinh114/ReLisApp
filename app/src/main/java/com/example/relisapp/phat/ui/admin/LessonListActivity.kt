@@ -1,6 +1,5 @@
 package com.example.relisapp.phat.ui.admin
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
@@ -9,14 +8,13 @@ import androidx.activity.compose.setContent
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.ViewModelProvider
-import com.example.relisapp.nam.ui.screens.ProfileActivity
+import com.example.relisapp.nam.ui.screens.user.ProfileActivity
 import com.example.relisapp.phat.data.AppDatabase
 import com.example.relisapp.phat.repository.CategoryRepository
 import com.example.relisapp.phat.repository.LessonRepository
 import com.example.relisapp.phat.ui.admin.screen.BaseAdminScreen
 import com.example.relisapp.phat.ui.admin.screen.LessonListScreen
 import com.example.relisapp.phat.ui.theme.AdminProTheme
-import com.example.relisapp.phat.ui.theme.UserFreshTheme
 import com.example.relisapp.phat.viewmodel.CategoryViewModel
 import com.example.relisapp.phat.viewmodel.CategoryViewModelFactory
 import com.example.relisapp.phat.viewmodel.LessonViewModel

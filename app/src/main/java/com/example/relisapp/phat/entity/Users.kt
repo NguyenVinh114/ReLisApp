@@ -22,5 +22,11 @@ data class Users(
     val fullName: String? = null,
     val phoneNumber: String? = null,
     val avatar: ByteArray? = null,
-    val accountStatus: String? = "active"
+    val accountStatus: String? = "active",
+    @ColumnInfo(defaultValue = "0")
+    val currentStreak: Int = 0,
+    @ColumnInfo(defaultValue = "0")
+    val longestStreak: Int = 0,
+    @ColumnInfo(defaultValue = "NULL")
+    val lastStudyDate: String? = null
 )

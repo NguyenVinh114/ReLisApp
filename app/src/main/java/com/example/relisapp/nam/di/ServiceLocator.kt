@@ -18,9 +18,6 @@ object ServiceLocator {
     private var sessionManager: SessionManager? = null
 
 
-    // ============================
-    // PROVIDE DATABASE
-    // ============================
     fun provideDatabase(context: Context): AppDatabase {
         return database ?: synchronized(this) {
             val instance = AppDatabase.getDatabase(context)
@@ -29,10 +26,6 @@ object ServiceLocator {
         }
     }
 
-
-    // ============================
-    // PROVIDE USER REPOSITORY
-    // ============================
     fun provideUserRepository(context: Context): UserRepository {
         return userRepository ?: synchronized(this) {
             val db = provideDatabase(context)
@@ -42,22 +35,14 @@ object ServiceLocator {
         }
     }
 
-
-    // ============================
-    // PROVIDE SESSION MANAGER
-    // ============================
     fun provideSessionManager(context: Context): SessionManager {
         return sessionManager ?: synchronized(this) {
-            val session = SessionManager(context.applicationContext)
-            sessionManager = session
-            session
+            val instance = SessionManager(context.applicationContext)
+            sessionManager = instance
+            instance
         }
     }
 
-
-    // ============================
-    // PROVIDE AUTH VIEWMODEL FACTORY
-    // ============================
     fun provideAuthViewModelFactory(context: Context): AuthViewModelFactory {
         val repo = provideUserRepository(context)
         val session = provideSessionManager(context)
