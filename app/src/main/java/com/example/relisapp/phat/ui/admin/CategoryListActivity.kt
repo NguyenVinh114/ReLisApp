@@ -9,9 +9,8 @@ import androidx.activity.compose.setContent
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.ViewModelProvider
-import com.example.relisapp.nam.ui.screens.ProfileActivity
+import com.example.relisapp.nam.ui.screens.user.ProfileActivity
 import com.example.relisapp.phat.data.AppDatabase
-import com.example.relisapp.phat.entity.Categories
 import com.example.relisapp.phat.repository.CategoryRepository
 import com.example.relisapp.phat.ui.admin.screen.*
 import com.example.relisapp.phat.ui.theme.AdminProTheme

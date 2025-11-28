@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 
 @Entity(
+    tableName = "Likes",
     primaryKeys = ["userId", "lessonId"],
     foreignKeys = [
         ForeignKey(
@@ -12,9 +13,13 @@ import androidx.room.ForeignKey
             childColumns = ["userId"],
             onDelete = ForeignKey.CASCADE
         ),
-        ForeignKey(entity = Lessons::class, parentColumns = ["lessonId"], childColumns = ["lessonId"], onDelete = ForeignKey.CASCADE)
+        ForeignKey(
+            entity = Lessons::class,
+            parentColumns = ["lessonId"],
+            childColumns = ["lessonId"],
+            onDelete = ForeignKey.CASCADE
+        )
     ]
-    
 )
 data class Likes(
     val userId: Int,

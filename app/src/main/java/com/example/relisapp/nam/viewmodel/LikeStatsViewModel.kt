@@ -69,7 +69,8 @@ class LikeStatsViewModel(
                     .take(5) // Lấy top 5
 
                 // 4. Lấy Like gần đây nhất (Recent)
-                val recent = allLikes.take(10).map { like ->
+                val recent = allLikes.sortedByDescending { it.likedAt }.take(10)
+                    .map { like ->
                     val user = userRepo.getUserById(like.userId)
                     val lesson = lessonRepo.getLessonById(like.lessonId)
 

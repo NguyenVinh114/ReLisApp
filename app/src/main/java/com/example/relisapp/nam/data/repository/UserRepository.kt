@@ -52,10 +52,6 @@ class UserRepository(private val userDao: UserDao) {
         userDao.logout(userId)
     }
 
-    // Update password
-    suspend fun updatePassword(userId: Int, newPassword: String) {
-        userDao.updatePassword(userId, newPassword)
-    }
 
 
     // Update avatar
@@ -95,6 +91,18 @@ class UserRepository(private val userDao: UserDao) {
 
     suspend fun updateFullName(userId: Int, newName: String) {
         userDao.updateFullName(userId, newName)
+    }
+
+    suspend fun updatePassword(userId: Int, newPassword: String) {
+        userDao.updatePassword(userId, newPassword)
+    }
+
+    suspend fun updateUserStreak(userId: Int, currentStreak: Int, longestStreak: Int, lastDate: String) {
+        userDao.updateStreak(userId, currentStreak, longestStreak, lastDate)
+    }
+
+    suspend fun getLeaderboardUsers(): List<User> {
+        return userDao.getLeaderboard()
     }
 
     @Transaction
