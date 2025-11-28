@@ -8,7 +8,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.FilterList
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.LockOpen
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -22,26 +25,29 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.relisapp.phat.entity.Categories
 import com.example.relisapp.phat.entity.Lessons
+import com.example.relisapp.phat.viewmodel.LessonViewModel
 
 // ... (Các import giữ nguyên)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LessonListScreen(
-    // [SỬA ĐỔI 1/3] Nhận Modifier từ màn hình cha (BaseAdminScreen)
     modifier: Modifier = Modifier,
     lessons: List<Lessons>,
     categories: List<Categories>,
+    viewModel: LessonViewModel,
     onAddLesson: () -> Unit,
-    onLessonClick: (Int) -> Unit,
+    onEditClick: (Int) -> Unit,
     onSearch: (String) -> Unit,
     onFilter: (type: String?, categoryId: Int?) -> Unit
 ) {
     var searchQuery by remember { mutableStateOf("") }
     var showFilterDialog by remember { mutableStateOf(false) }
 
+    // [CẬP NHẬT] State để quản lý dialog xác nhận khóa/mở khóa
+    var lessonToToggleLock by remember { mutableStateOf<Lessons?>(null) }
+
     Scaffold(
-        // Áp dụng modifier từ cha cho Scaffold
         modifier = modifier.fillMaxSize(),
         floatingActionButton = {
             FloatingActionButton(
@@ -52,19 +58,18 @@ fun LessonListScreen(
                 Icon(Icons.Filled.Add, contentDescription = "Add Lesson")
             }
         }
-    ) { paddingValues -> // paddingValues này là từ Scaffold (cho FAB)
+    ) { paddingValues ->
         Column(
             modifier = Modifier
-                .padding(paddingValues) // Luôn áp dụng padding từ Scaffold
+                .padding(paddingValues)
                 .fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(8.dp) // Thêm khoảng cách giữa các phần tử con
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            // --- Thanh Tìm kiếm và Lọc ---
+            // Thanh Tìm kiếm và Lọc
             Row(
-                // [SỬA ĐỔI 2/3] Thêm padding ngang cho Row này
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp), // <-- Thụt lề cho thanh tìm kiếm
+                    .padding(horizontal = 16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 OutlinedTextField(
@@ -74,14 +79,11 @@ fun LessonListScreen(
                         onSearch(it)
                     },
                     label = { Text("Search by title...") },
-                    leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search Icon") },
+                    leadingIcon = { Icon(Icons.Default.Search, "Search") },
                     trailingIcon = {
                         if (searchQuery.isNotEmpty()) {
-                            IconButton(onClick = {
-                                searchQuery = ""
-                                onSearch("")
-                            }) {
-                                Icon(Icons.Default.Clear, contentDescription = "Clear Search")
+                            IconButton(onClick = { searchQuery = ""; onSearch("") }) {
+                                Icon(Icons.Default.Clear, "Clear")
                             }
                         }
                     },
@@ -90,11 +92,10 @@ fun LessonListScreen(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 IconButton(onClick = { showFilterDialog = true }) {
-                    Icon(Icons.Default.FilterList, contentDescription = "Filter Lessons")
+                    Icon(Icons.Default.FilterList, "Filter")
                 }
             }
 
-            // --- Hộp thoại Lọc ---
             if (showFilterDialog) {
                 FilterDialog(
                     categories = categories,
@@ -106,49 +107,84 @@ fun LessonListScreen(
                 )
             }
 
-            // --- Danh sách Bài học ---
+            // Danh sách Bài học
             if (lessons.isEmpty()) {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Text("No lessons found.", style = MaterialTheme.typography.bodyLarge)
                 }
             } else {
                 LazyColumn(
-                    // [SỬA ĐỔI 3/3] Thêm padding ngang cho danh sách
-                    contentPadding = PaddingValues(horizontal = 16.dp), // <-- Thụt lề cho các item
+                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     items(lessons, key = { it.lessonId }) { lesson ->
                         LessonItemCard(
                             lesson = lesson,
                             categoryName = categories.find { it.categoryId == lesson.categoryId }?.categoryName ?: "N/A",
-                            // Cập nhật hành động click vào đây
-                            onClick = { onLessonClick(lesson.lessonId) } // onLessonClick giờ sẽ nhận ID
+                            // [CẬP NHẬT] Truyền các callback mới
+                            onEdit = { onEditClick(lesson.lessonId) },
+                            onToggleLock = { lessonToToggleLock = lesson }
                         )
                     }
                 }
             }
         }
     }
+
+    // [CẬP NHẬT] Dialog xác nhận khóa/mở khóa
+    lessonToToggleLock?.let { lesson ->
+        val isLocking = lesson.isLocked == 0
+        val actionText = if (isLocking) "Lock" else "Unlock"
+        AlertDialog(
+            onDismissRequest = { lessonToToggleLock = null },
+            title = { Text("Confirm $actionText") },
+            text = { Text("Are you sure you want to $actionText the lesson \"${lesson.title}\"?") },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        if (isLocking) viewModel.lockLesson(lesson) else viewModel.unlockLesson(lesson)
+                        lessonToToggleLock = null
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = if (isLocking) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary
+                    )
+                ) {
+                    Text(actionText)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { lessonToToggleLock = null }) {
+                    Text("Cancel")
+                }
+            }
+        )
+    }
 }
-
-// ... (Các hàm còn lại giữ nguyên)
-
 
 
 @Composable
-fun LessonItemCard(lesson: Lessons, categoryName: String, onClick: () -> Unit) {
+fun LessonItemCard(
+    lesson: Lessons,
+    categoryName: String,
+    // [CẬP NHẬT] Nhận 2 callback riêng biệt
+    onEdit: () -> Unit,
+    onToggleLock: () -> Unit
+) {
+    // Xác định màu sắc dựa trên trạng thái isLocked
+    val cardAlpha = if (lesson.isLocked == 1) 0.6f else 1f
+    val contentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = cardAlpha)
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = onClick),
+            .clickable(onClick = onEdit), // Vẫn giữ click cả card để sửa
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface.copy(alpha = cardAlpha)
+        )
     ) {
         Row(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 16.dp, end = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(modifier = Modifier.weight(1f)) {
@@ -157,32 +193,52 @@ fun LessonItemCard(lesson: Lessons, categoryName: String, onClick: () -> Unit) {
                     style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = contentColor
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = "Category: $categoryName",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = cardAlpha)
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Row {
-                    // 1. LẤY MÀU DỰA TRÊN LOẠI BÀI HỌC
                     val typeColor = getColorForLessonType(type = lesson.type)
-                    Chip(label = lesson.type, color = typeColor) // 2. TRUYỀN MÀU VÀO CHIP
-
+                    Chip(label = lesson.type, color = typeColor.copy(alpha = cardAlpha))
                     Spacer(modifier = Modifier.width(8.dp))
-
                     lesson.level?.let {
-                        // Dùng màu trung tính cho Level
-                        Chip(label = it, color = MaterialTheme.colorScheme.tertiary)
+                        Chip(label = it, color = MaterialTheme.colorScheme.tertiary.copy(alpha = cardAlpha))
+                    }
+                }
+            }
+            // [CẬP NHẬT] Hàng chứa các icon thao tác
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                IconButton(onClick = onEdit) {
+                    Icon(
+                        Icons.Default.Edit,
+                        contentDescription = "Edit Lesson",
+                        tint = contentColor
+                    )
+                }
+                IconButton(onClick = onToggleLock) {
+                    if (lesson.isLocked == 0) {
+                        Icon(
+                            Icons.Default.LockOpen,
+                            contentDescription = "Lock Lesson",
+                            tint = MaterialTheme.colorScheme.error
+                        )
+                    } else {
+                        Icon(
+                            Icons.Default.Lock,
+                            contentDescription = "Unlock Lesson",
+                            tint = contentColor
+                        )
                     }
                 }
             }
         }
     }
 }
-
 // CẬP NHẬT TRONG COMPOSABLE NÀY
 @Composable
 private fun Chip(label: String, color: Color) { // Thêm tham số `color`

@@ -22,7 +22,6 @@ import com.example.relisapp.phat.viewmodel.LessonViewModelFactory
 
 class LessonListActivity : ComponentActivity() {
 
-    // Sử dụng 'by viewModels()' để khởi tạo gọn gàng hơn
     private val lessonViewModel: LessonViewModel by lazy {
         val factory = LessonViewModelFactory(LessonRepository(AppDatabase.getDatabase(this).lessonDao()))
         ViewModelProvider(this, factory)[LessonViewModel::class.java]
@@ -38,19 +37,23 @@ class LessonListActivity : ComponentActivity() {
 
         setContent {
             AdminProTheme {
-                // --- Thu thập State từ ViewModel ---
-                val lessons by lessonViewModel.lessons.collectAsState() // Không cần initial, StateFlow đã có giá trị mặc định
+                val lessons by lessonViewModel.lessons.collectAsState()
                 val categories by categoryViewModel.categories.collectAsState()
 
                 BaseAdminScreen(
                     title = "Manage Lessons",
                     currentScreen = "Manage Lessons",
-                    onDashboard = {startActivity(Intent(this, AdminDashboardActivity::class.java))},
-                    onManageCategories = {
-                        // Cập nhật: Điều hướng đến CategoryListActivity
-                        startActivity(Intent(this, CategoryListActivity::class.java)) // Tạm thời trỏ đến AddCategory, nên đổi thành CategoryList sau
+                    onDashboard = { startActivity(Intent(this, AdminDashboardActivity::class.java).apply {
+                        flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    }) },
+                    onManageCategories = { startActivity(Intent(this, CategoryListActivity::class.java).apply {
+                        flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    }) },
+                    onManageLessons = {
+                        startActivity(Intent(this, LessonListActivity::class.java).apply {
+                            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        })
                     },
-                    onManageLessons = { /* Đang ở màn hình này, không cần làm gì */ },
                     onManageUsers = { showToast("Navigate to Manage Users") },
                     onFeedback = { showToast("Navigate to Feedback") },
                     onLogout = {
@@ -65,12 +68,12 @@ class LessonListActivity : ComponentActivity() {
                         modifier = modifier,
                         lessons = lessons,
                         categories = categories,
+                        viewModel = lessonViewModel,
                         onAddLesson = {
                             startActivity(Intent(this, AddLessonActivity::class.java))
                         },
-                        onLessonClick = { lessonId ->
+                        onEditClick = { lessonId ->
                             showToast("Clicked lesson ID: $lessonId")
-                            // TODO: Tạo EditLessonActivity và điều hướng đến đó
                             val intent = Intent(this, LessonDetailActivity::class.java)
                             intent.putExtra("LESSON_ID", lessonId)
                             startActivity(intent)
@@ -85,9 +88,6 @@ class LessonListActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
-        // Tải lại dữ liệu khi quay lại màn hình
-        lessonViewModel.loadAllLessons()
-        categoryViewModel.loadCategories()
     }
 
     private fun showToast(message: String) {

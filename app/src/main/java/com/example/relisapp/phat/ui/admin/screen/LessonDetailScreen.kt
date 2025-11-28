@@ -1,14 +1,8 @@
-// phat/ui/admin/screen/LessonDetailScreen.kt
 package com.example.relisapp.phat.ui.admin.screen
 
-// Thêm các import cần thiết
-import android.content.Intent
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Quiz
-import com.example.relisapp.phat.ui.admin.AddEditQuestionActivity
-// ... các import khác giữ nguyên
-
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -31,9 +25,7 @@ fun LessonDetailScreen(
     lesson: Lessons?,
     categories: List<Categories>,
     onUpdate: (Lessons) -> Unit,
-    onDelete: (Lessons) -> Unit,
     onBack: () -> Unit,
-    // [THÊM MỚI 1/2] Thêm một callback để điều hướng
     onNavigateToQuestions: (Int) -> Unit
 ) {
     val context = LocalContext.current
@@ -204,7 +196,7 @@ fun LessonDetailScreen(
         Spacer(Modifier.height(8.dp))
     }
 
-    // --- Dialog xác nhận xóa giữ nguyên ---
+    /*// --- Dialog xác nhận xóa giữ nguyên ---
     if (showDeleteDialog) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
@@ -223,7 +215,7 @@ fun LessonDetailScreen(
                 TextButton(onClick = { showDeleteDialog = false }) { Text("Cancel") }
             }
         )
-    }
+    }*/
 }
 
 /**

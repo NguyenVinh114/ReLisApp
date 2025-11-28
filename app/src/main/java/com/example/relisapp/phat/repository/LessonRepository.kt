@@ -35,11 +35,24 @@ class LessonRepository(private val lessonDao: LessonDao) {
         lessonDao.deleteLesson(lesson)
     }
 
-    // --- HÀM QUAN TRỌNG ĐỂ LẤY DỮ LIỆU QUIZ ---
-    // Hàm này lấy các câu hỏi và lựa chọn từ bảng Questions và Choices
-    fun getQuestionsWithChoicesForLesson(lessonId: Int): Flow<List<QuestionWithChoices>> {
-        return lessonDao.getQuestionsWithChoicesForLesson(lessonId)
+    suspend fun doesLessonExist(title: String, categoryId: Int): Boolean {
+        return lessonDao.lessonExists(title, categoryId)
     }
 
+    suspend fun doesLessonExist(title: String, categoryId: Int, excludeLessonId: Int): Boolean {
+        return lessonDao.lessonExistsExcludingId(title, categoryId, excludeLessonId)
+    }
+
+    fun getAllLessonsForUser(): Flow<List<Lessons>> {
+        return lessonDao.getAllForUser()
+    }
+
+    fun getLessonsByCategoryIdForUser(categoryId: Int): Flow<List<Lessons>> {
+        return lessonDao.getLessonsByCategoryIdForUser(categoryId)
+    }
+
+    fun getLessonByIdForUser(lessonId: Int): Flow<Lessons?> {
+        return lessonDao.getLessonByIdForUser(lessonId)
+    }
 
 }

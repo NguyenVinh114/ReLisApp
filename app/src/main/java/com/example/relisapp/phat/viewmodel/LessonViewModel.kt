@@ -6,35 +6,28 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.relisapp.phat.entity.Lessons
 import com.example.relisapp.phat.repository.LessonRepository
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-/**
- * ViewModel này CHỈ chịu trách nhiệm cho các nghiệp vụ liên quan đến LESSON.
- */
+
+
 class LessonViewModel(private val repository: LessonRepository) : ViewModel() {
 
-    // --- STATE CHO MÀN HÌNH DANH SÁCH BÀI HỌC ---
 
-    // _allLessons là nguồn dữ liệu gốc, không thay đổi khi lọc/tìm kiếm.
     private val _allLessons = MutableStateFlow<List<Lessons>>(emptyList())
 
-    // _lessons là danh sách được hiển thị trên UI, sẽ thay đổi khi lọc/tìm kiếm.
     private val _lessons = MutableStateFlow<List<Lessons>>(emptyList())
     val lessons: StateFlow<List<Lessons>> = _lessons.asStateFlow()
 
-    // --- STATE CHO MÀN HÌNH CHI TIẾT BÀI HỌC ---
     private val _lessonDetails = MutableStateFlow<Lessons?>(null)
     val lessonDetails: StateFlow<Lessons?> = _lessonDetails.asStateFlow()
 
 
-    // --- CÁC HÀM XỬ LÝ LOGIC CHO LESSON ---
 
-    /**
-     * Tải toàn bộ danh sách bài học từ repository.
-     */
     fun loadAllLessons() {
         viewModelScope.launch {
             repository.getAllLessons().collect { lessonList ->
@@ -44,10 +37,7 @@ class LessonViewModel(private val repository: LessonRepository) : ViewModel() {
         }
     }
 
-    /**
-     * Tải thông tin chi tiết của MỘT bài học.
-     * Dùng cho màn hình QuestionListScreen để lấy content, hoặc màn hình sửa bài học.
-     */
+
     fun loadLessonDetails(lessonId: Int) {
         viewModelScope.launch {
             repository.getLessonById(lessonId).collect { lesson ->
@@ -56,9 +46,7 @@ class LessonViewModel(private val repository: LessonRepository) : ViewModel() {
         }
     }
 
-    /**
-     * Tìm kiếm bài học dựa trên tiêu đề.
-     */
+
     fun searchLessons(query: String) {
         val filteredList = if (query.isBlank()) {
             _allLessons.value // Nếu query rỗng, trả về danh sách gốc
@@ -70,9 +58,6 @@ class LessonViewModel(private val repository: LessonRepository) : ViewModel() {
         _lessons.value = filteredList
     }
 
-    /**
-     * Lọc danh sách bài học dựa trên loại (type) và/hoặc danh mục (category).
-     */
     fun filterLessons(type: String?, categoryId: Int?) {
         var filteredList = _allLessons.value
 
@@ -86,30 +71,52 @@ class LessonViewModel(private val repository: LessonRepository) : ViewModel() {
         _lessons.value = filteredList
     }
 
-    /**
-     * Thêm một bài học mới vào cơ sở dữ liệu.
-     */
+    private val _saveResult = MutableSharedFlow<SaveResult>(replay = 0)
+    val saveResult = _saveResult.asSharedFlow()
+
     fun addLesson(lesson: Lessons) {
         viewModelScope.launch {
-            repository.addLesson(lesson)
+            try {
+                val exists = repository.doesLessonExist(lesson.title.trim(), lesson.categoryId)
+                if (!exists) {
+                    repository.addLesson(lesson)
+                    _saveResult.emit(SaveResult.Success) // [SỬA ĐỔI 2] Dùng emit()
+                } else {
+                    _saveResult.emit(SaveResult.Existed("A lesson with this title already exists in this category."))
+                }
+            } catch (e: Exception) {
+                _saveResult.emit(SaveResult.Failure(e))
+            }
         }
     }
 
-    /**
-     * Cập nhật một bài học đã có.
-     */
     fun updateLesson(lesson: Lessons) {
         viewModelScope.launch {
-            repository.updateLesson(lesson)
+            try {
+                val exists = repository.doesLessonExist(lesson.title.trim(), lesson.categoryId, lesson.lessonId)
+                if (!exists) {
+                    repository.updateLesson(lesson)
+                    _saveResult.emit(SaveResult.Success) // [SỬA ĐỔI 3] Dùng emit()
+                } else {
+                    _saveResult.emit(SaveResult.Existed("Another lesson with this title already exists in this category."))
+                }
+            } catch (e: Exception) {
+                _saveResult.emit(SaveResult.Failure(e))
+            }
         }
     }
 
-    /**
-     * Xóa một bài học.
-     */
-    fun deleteLesson(lesson: Lessons) {
+    fun lockLesson(lesson: Lessons) {
         viewModelScope.launch {
-            repository.deleteLesson(lesson)
+            val lockedLesson = lesson.copy(isLocked = 1)
+            repository.updateLesson(lockedLesson)
+        }
+    }
+
+    fun unlockLesson(lesson: Lessons) {
+        viewModelScope.launch {
+            val unlockedLesson = lesson.copy(isLocked = 0)
+            repository.updateLesson(unlockedLesson)
         }
     }
 

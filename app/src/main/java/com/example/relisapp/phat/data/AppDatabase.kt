@@ -73,7 +73,7 @@ abstract class AppDatabase : RoomDatabase() {
 
             if (!dbFile.exists()) {
                 // [QUAN TRỌNG] Chỉ gọi createFromAsset KHI VÀ CHỈ KHI file DB chưa tồn tại
-                builder.createFromAsset("DB_ReLis_V1.db")
+                builder.createFromAsset("DB_ReLis_V2.db")
                 // Log để biết rằng DB được tạo từ Asset
                 Log.i("AppDatabase", "Database created from asset.")
             } else {

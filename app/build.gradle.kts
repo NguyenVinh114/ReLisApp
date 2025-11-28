@@ -93,4 +93,6 @@ dependencies {
 
     implementation("androidx.work:work-runtime-ktx:2.9.0")
 
+    implementation ("androidx.compose.ui:ui-tooling-preview")
+    debugImplementation ("androidx.compose.ui:ui-tooling") // Dùng debugImplementation
 }

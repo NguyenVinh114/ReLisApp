@@ -21,5 +21,6 @@ data class Results(
     val lessonId: Int,
     val score: Int?,
     val totalQuestions: Int?,
-    val timeSpent: String?
+    val timeSpent: String?,
+    val createdAt: String? = null
 )

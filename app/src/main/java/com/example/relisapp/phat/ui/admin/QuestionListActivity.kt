@@ -56,12 +56,20 @@ class QuestionListActivity : ComponentActivity() {
 
                 BaseAdminScreen(
                     title = lesson?.title ?: "Questions",
+                    onDashboard = { startActivity(Intent(this, AdminDashboardActivity::class.java).apply {
+                        flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    }) },
+                    onManageCategories = { startActivity(Intent(this, CategoryListActivity::class.java).apply {
+                        flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    }) },
+                    onManageLessons = {
+                        startActivity(Intent(this, LessonListActivity::class.java).apply {
+                            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        })
+                    },
                     onManageUsers ={},
-                    onDashboard = {},
                     onFeedback = {},
-                    onManageCategories = {},
                     onLogout = {},
-                    onManageLessons = { finish() },
                     onIconUserClick = {
                         startActivity(Intent(this, ProfileActivity::class.java))
                     }

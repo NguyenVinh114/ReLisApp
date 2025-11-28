@@ -45,7 +45,7 @@ class UserCategoryListActivity : ComponentActivity() {
         setContent {
             // 2. SỬ DỤNG THEME RIÊNG (UserFreshTheme)
             UserFreshTheme {
-                val categories by categoryViewModel.categories.collectAsState(initial = emptyList())
+                val categories by categoryViewModel.categoriesForUser.collectAsState(initial = emptyList())
 
                 BaseUserScreen(
                     title = "All Topics", // Đổi tên title cho thân thiện người học
