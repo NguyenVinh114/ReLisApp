@@ -12,7 +12,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.example.relisapp.nam.ui.screens.ProfileActivity
 import com.example.relisapp.phat.data.AppDatabase
 import com.example.relisapp.phat.repository.CategoryRepository
 import com.example.relisapp.phat.ui.admin.screen.AddEditCategoryScreen
@@ -89,7 +88,7 @@ class AddEditCategoryActivity : ComponentActivity() {
                         finishAffinity()
                     },
                     onIconUserClick = {
-                        startActivity(Intent(this, ProfileActivity::class.java))
+                       //startActivity(Intent(this, ProfileActivity::class.java))
                     }
                 ) { modifierFromBase ->
                     AddEditCategoryScreen(

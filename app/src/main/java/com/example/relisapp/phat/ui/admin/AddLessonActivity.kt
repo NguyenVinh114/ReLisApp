@@ -14,7 +14,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.error
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.relisapp.nam.ui.screens.ProfileActivity
 import com.example.relisapp.phat.data.AppDatabase
 import com.example.relisapp.phat.repository.CategoryRepository
 import com.example.relisapp.phat.repository.LessonRepository
@@ -89,7 +88,7 @@ class AddLessonActivity : ComponentActivity() {
                         finishAffinity()
                     },
                     onIconUserClick = {
-                        startActivity(Intent(this, ProfileActivity::class.java))
+                        //startActivity(Intent(this, ProfileActivity::class.java))
                     }
                 ) { modifierFromBase ->
                     AddLessonScreen(
