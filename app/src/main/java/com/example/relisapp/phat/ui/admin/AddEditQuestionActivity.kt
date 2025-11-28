@@ -14,7 +14,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.error
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.relisapp.nam.ui.screens.ProfileActivity
+import com.example.relisapp.nam.ui.screens.user.ProfileActivity
 import com.example.relisapp.phat.data.AppDatabase
 import com.example.relisapp.phat.repository.QuestionRepository
 import com.example.relisapp.phat.ui.admin.screen.AddEditQuestionScreen

@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.relisapp">
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -12,14 +15,14 @@
         android:theme="@style/Theme.ReLisApp">
 
 
-        <!-- 👇 Đặt MainActivity làm màn hình khởi dong -->
+        <!-- 👇 Đặt Ma   inActivity làm màn hìn khởi dong -->
         <activity
             android:name=".MainActivity"
             android:exported="true">
-            <intent-filter>
+          <!--  <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            </intent-filter>-->
         </activity>
 
         <activity android:name=".ui.screens.LoginActivity" android:exported="false" />
@@ -51,29 +54,38 @@
         <activity android:name=".phat.ui.admin.QuestionListActivity"
             android:exported="false"/>
 
-        <activity android:name=".nam.MainActivity"/>
-        <activity android:name=".nam.ui.screens.AdminDashboardActivity"/>
-        <activity android:name=".nam.ui.screens.AdminDashboardActivity2"/>
-        <activity android:name=".nam.ui.screens.LoginActivity"
+        <activity android:name=".nam.ui.screens.admin.AdminDashboardActivity"/>
+        <activity android:name=".nam.ui.screens.admin.AdminDashboardActivity2"/>
+        <activity android:name=".nam.ui.screens.auth.LoginActivity"
             android:exported="true">
-           <!-- <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
         </activity>
-        <activity android:name=".nam.ui.screens.AdminActivity"/>
-        <activity android:name=".nam.ui.screens.ChangeForgotPasswordActivity"/>
-        <activity android:name=".nam.ui.screens.ChangePassWordActivity"/>
-        <activity android:name=".nam.ui.screens.ChangeRoleActivity"/>
-        <activity android:name=".nam.ui.screens.ForgotPasswordOtpVerificationActivity"/>
-        <activity android:name=".nam.ui.screens.ForgotPasswordPhoneEntryActivity"/>
-        <activity android:name=".nam.ui.screens.InfoProfileActivity"/>
-        <activity android:name=".nam.ui.screens.ProfileActivity"/>
-        <activity android:name=".nam.ui.screens.SignupActivity"/>
-        <activity android:name=".nam.ui.screens.StartActivity"/>
-        <activity android:name=".nam.ui.screens.UserDetailActivity"/>
-        <activity android:name=".nam.ui.screens.UserListActivity"/>
-        <activity android:name=".nam.ui.screens.VerificationActivity"/>
+        <activity android:name=".nam.ui.screens.auth.ChangeForgotPasswordActivity"/>
+        <activity android:name=".nam.ui.screens.auth.ChangePassWordActivity"/>
+        <activity android:name=".nam.ui.screens.roles.ChangeRoleActivity"/>
+        <activity android:name=".nam.ui.screens.auth.ForgotPasswordOtpVerificationActivity"/>
+        <activity android:name=".nam.ui.screens.auth.ForgotPasswordPhoneEntryActivity"/>
+        <activity android:name=".nam.ui.screens.user.InfoProfileActivity"/>
+        <activity android:name=".nam.ui.screens.user.ProfileActivity"/>
+        <activity android:name=".nam.ui.screens.auth.SignupActivity"/>
+        <activity android:name=".nam.ui.screens.home.StartActivity" android:exported="true"><intent-filter>
+                         <action android:name="android.intent.action.MAIN" />
+                            <category android:name="android.intent.category.LAUNCHER" />
+                      </intent-filter>
+        </activity>
+        <activity android:name=".nam.ui.screens.user.UserDetailActivity"/>
+        <activity android:name=".nam.ui.screens.user.UserListActivity"/>
+        <activity android:name=".nam.ui.screens.auth.VerificationActivity"/>
+        <activity
+            android:name=".nam.redirect.NotificationRedirectActivity"
+            android:exported="true"/>
+        <activity android:name=".nam.ui.screens.settings.SettingsActivity" />
+        <activity android:name=".nam.ui.screens.streak.StreakActivity"/>
+        <activity android:name=".nam.ui.screens.leaderboard.LeaderboardActivity" />
+
     </application>
 
 </manifest>
