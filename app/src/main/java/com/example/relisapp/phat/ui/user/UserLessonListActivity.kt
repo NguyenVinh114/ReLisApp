@@ -50,9 +50,9 @@ class UserLessonListActivity : ComponentActivity() {
                 val lessons by lessonViewModel.lessons.collectAsStateWithLifecycle()
 
                 BaseUserScreen(
-                    title = categoryName, // Hiển thị tên Category trên TopBar
-                    currentTab = UserTab.CATEGORIES, // Vẫn highlight tab Categories
-                    onUserIconClick = { /* Xử lý sự kiện */ },
+                    title = categoryName,
+                    currentTab = UserTab.CATEGORIES,
+                    onUserIconClick = { },
                     onTabSelected = { selectedTab ->
                         when (selectedTab) {
                             UserTab.CATEGORIES -> { /* Đang ở đây */ }

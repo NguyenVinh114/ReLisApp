@@ -39,9 +39,17 @@ class CategoryListActivity : ComponentActivity() {
 
                 BaseAdminScreen(
                     title = "Manage Categories",
-                    onDashboard = { startActivity(Intent(this, AdminDashboardActivity::class.java)) },
-                    onManageCategories = { categoryViewModel.loadCategories() },
-                    onManageLessons = { startActivity(Intent(this, LessonListActivity::class.java)) },
+                    onDashboard = { startActivity(Intent(this, AdminDashboardActivity::class.java).apply {
+                        flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    }) },
+                    onManageCategories = { startActivity(Intent(this, CategoryListActivity::class.java).apply {
+                        flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    }) },
+                    onManageLessons = {
+                        startActivity(Intent(this, LessonListActivity::class.java).apply {
+                            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        })
+                    },
                     onManageUsers = { /* Chuyển sang UserActivity */ },
                     onFeedback = { /* Chuyển sang FeedbackActivity */ },
                     onLogout = { finish() },
@@ -64,8 +72,8 @@ class CategoryListActivity : ComponentActivity() {
                             }
                             startActivity(intent)
                         },
-                        onDeleteSuccess = {
-                            Toast.makeText(this, "Category deleted", Toast.LENGTH_SHORT).show()
+                        onLockSuccess = {
+                            Toast.makeText(this, "Category locked", Toast.LENGTH_SHORT).show()
                         },
                         modifier = modifierFromBase
                     )

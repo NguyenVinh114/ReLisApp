@@ -182,7 +182,7 @@ class LoginActivity : ComponentActivity() {
      */
     private fun navigateAfterLogin(user: User) {
         val targetActivity = when (user.role?.lowercase()) {
-            "admin" -> AdminDashboardActivity2::class.java
+            "admin" -> com.example.relisapp.phat.ui.admin.AdminDashboardActivity::class.java
             else -> com.example.relisapp.MainActivity ::class.java
         }
 

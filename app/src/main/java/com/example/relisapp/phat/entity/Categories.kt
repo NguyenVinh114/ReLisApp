@@ -4,5 +4,6 @@ import androidx.room.*
 data class Categories(
     @PrimaryKey(autoGenerate = true) val categoryId: Int = 0,
     val categoryName: String,
-    val type: String              // nghe / doc
+    val type: String,
+    val isLocked: Int = 0
 )

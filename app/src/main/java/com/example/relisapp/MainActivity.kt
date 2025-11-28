@@ -35,9 +35,9 @@ class MainActivity : ComponentActivity() {
                             UserCategoryListActivity::class.java)
                             intent.putExtra("from_main", "reading") // key = "from_screen", value = "listening"
                             startActivity(intent) },
-                        onProgressClick = { currentScreen.value = "progress" },   // ✅ thêm Progress
+                        onProgressClick = { currentScreen.value = "progress" },
                         onSearchClick = { currentScreen.value = "search" },
-                        onFavoriteClick = { currentScreen.value = "favorite" }    // ✅ thêm Favorite
+                        onFavoriteClick = { currentScreen.value = "favorite" }
                     )
 
                     "listening" -> ListeningScreen(

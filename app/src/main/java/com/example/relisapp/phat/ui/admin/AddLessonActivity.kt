@@ -7,9 +7,11 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.error
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.relisapp.nam.ui.screens.ProfileActivity
@@ -23,6 +25,8 @@ import com.example.relisapp.phat.viewmodel.CategoryViewModel
 import com.example.relisapp.phat.viewmodel.LessonViewModel
 import com.example.relisapp.phat.viewmodel.CategoryViewModelFactory
 import com.example.relisapp.phat.viewmodel.LessonViewModelFactory
+import com.example.relisapp.phat.viewmodel.SaveResult
+import kotlinx.coroutines.flow.collectLatest
 
 
 class AddLessonActivity : ComponentActivity() {
@@ -49,13 +53,35 @@ class AddLessonActivity : ComponentActivity() {
                 val categories by categoryViewModel.categories.collectAsState(initial = emptyList())
                 val context = LocalContext.current
 
+                LaunchedEffect(Unit) {
+                    lessonViewModel.saveResult.collectLatest { result ->
+                        when (result) {
+                            is SaveResult.Success -> {
+                                Toast.makeText(context, "Lesson Saved!", Toast.LENGTH_SHORT).show()
+                                finish()
+                            }
+                            is SaveResult.Existed -> {
+                                Toast.makeText(context, result.message, Toast.LENGTH_LONG).show()
+                            }
+                            is SaveResult.Failure -> {
+                                Toast.makeText(context, "An unexpected error occurred: ${result.error.message}", Toast.LENGTH_LONG).show()
+                            }
+                        }
+                    }
+                }
                 BaseAdminScreen(
                     title = "Add New Lesson",
-                    onDashboard = {startActivity(Intent(this, AdminDashboardActivity::class.java))},
-                    onManageCategories = {
-                        startActivity(Intent(this, CategoryListActivity::class.java))
-                        showToast(context, "Navigate to Manage Categories") },
-                    onManageLessons = { showToast(context, "Navigate to Manage Lessons") },
+                    onDashboard = { startActivity(Intent(this, AdminDashboardActivity::class.java).apply {
+                        flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    }) },
+                    onManageCategories = { startActivity(Intent(this, CategoryListActivity::class.java).apply {
+                        flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    }) },
+                    onManageLessons = {
+                        startActivity(Intent(this, LessonListActivity::class.java).apply {
+                            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        })
+                    },
                     onManageUsers = { showToast(context, "Navigate to Manage Users") },
                     onFeedback = { showToast(context, "Navigate to Feedback") },
                     onLogout = {
@@ -66,15 +92,11 @@ class AddLessonActivity : ComponentActivity() {
                         startActivity(Intent(this, ProfileActivity::class.java))
                     }
                 ) { modifierFromBase ->
-                    // --- NỘI DUNG CHÍNH LÀ ADDLESSONSCREEN ---
                     AddLessonScreen(
                         modifier = modifierFromBase,
                         categories = categories,
                         onSave = { lesson ->
-                            // [SỬA ĐỔI] Kích hoạt hàm addLesson trong ViewModel
                             lessonViewModel.addLesson(lesson)
-                            Toast.makeText(context, "Lesson Saved!", Toast.LENGTH_SHORT).show()
-                            finish()
                         },
                         onBack = { finish() }
                     )

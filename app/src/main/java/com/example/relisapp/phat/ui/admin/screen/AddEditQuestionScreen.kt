@@ -105,7 +105,6 @@ fun AddEditQuestionScreen(
             choicesState = choices,
             fillInBlankAnswer = fillInBlankAnswer
         )
-        onSave()
     }
 
     // Xác định xem nút Save có được bật hay không

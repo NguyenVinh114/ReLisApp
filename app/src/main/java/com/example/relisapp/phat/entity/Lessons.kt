@@ -16,6 +16,8 @@ data class Lessons(
     var transcript: String? = null,
     var level: String? = null,
     var createdBy: Int? = null,
-    var createdAt: String? = null
+    var createdAt: String? = null,
+    val isLocked: Int = 0
+
 )
 

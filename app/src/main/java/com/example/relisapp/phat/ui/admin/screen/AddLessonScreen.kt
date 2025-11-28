@@ -27,7 +27,7 @@ fun AddLessonScreen(
     var title by remember { mutableStateOf("") }
     var selectedType by remember { mutableStateOf("Listening") }
     var selectedCategoryId by remember { mutableStateOf<Int?>(null) }
-    var selectedLevel by remember { mutableStateOf("Beginner") }
+    var selectedLevel by remember { mutableStateOf("A1") }
     var content by remember { mutableStateOf("") }
     var audioPath by remember { mutableStateOf("") }
     var transcript by remember { mutableStateOf("") }

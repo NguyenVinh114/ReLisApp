@@ -12,14 +12,14 @@
         android:theme="@style/Theme.ReLisApp">
 
 
-        <!-- 👇 Đặt MainActivity làm màn hìn khởi dong -->
+        <!-- 👇 Đặt MainActivity làm màn hình khởi dong -->
         <activity
             android:name=".MainActivity"
             android:exported="true">
-          <!--  <intent-filter>
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>-->
+            </intent-filter>
         </activity>
 
         <activity android:name=".ui.screens.LoginActivity" android:exported="false" />
@@ -56,10 +56,10 @@
         <activity android:name=".nam.ui.screens.AdminDashboardActivity2"/>
         <activity android:name=".nam.ui.screens.LoginActivity"
             android:exported="true">
-            <intent-filter>
+           <!-- <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            </intent-filter>-->
         </activity>
         <activity android:name=".nam.ui.screens.AdminActivity"/>
         <activity android:name=".nam.ui.screens.ChangeForgotPasswordActivity"/>

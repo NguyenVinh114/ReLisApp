@@ -5,8 +5,10 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModelProvider
 import com.example.relisapp.nam.ui.screens.ProfileActivity
 import com.example.relisapp.phat.data.AppDatabase
@@ -19,6 +21,8 @@ import com.example.relisapp.phat.viewmodel.CategoryViewModel
 import com.example.relisapp.phat.viewmodel.CategoryViewModelFactory
 import com.example.relisapp.phat.viewmodel.LessonViewModel
 import com.example.relisapp.phat.viewmodel.LessonViewModelFactory
+import com.example.relisapp.phat.viewmodel.SaveResult
+import kotlinx.coroutines.flow.collectLatest
 
 class LessonDetailActivity : ComponentActivity() {
 
@@ -50,13 +54,33 @@ class LessonDetailActivity : ComponentActivity() {
             AdminProTheme {
                 val lesson by lessonViewModel.lessonDetails.collectAsState()
                 val categories by categoryViewModel.categories.collectAsState()
+                val context = LocalContext.current
 
+                LaunchedEffect(Unit) {
+                    lessonViewModel.saveResult.collectLatest { result ->
+                        when (result) {
+                            is SaveResult.Success -> {
+                                Toast.makeText(context, "Lesson Saved!", Toast.LENGTH_SHORT).show()
+                                finish()
+                            }
+                            is SaveResult.Existed -> {
+                                Toast.makeText(context, result.message, Toast.LENGTH_LONG).show()
+                            }
+                            is SaveResult.Failure -> {
+                                Toast.makeText(context, "An unexpected error occurred: ${result.error.message}", Toast.LENGTH_LONG).show()
+                            }
+                        }
+                    }
+                }
                 BaseAdminScreen(
                     title = "Lesson Details",
-                    onDashboard = { /* Điều hướng */ },
-                    onManageCategories = { /* Điều hướng */ },
+                    onDashboard = { startActivity(Intent(this, AdminDashboardActivity::class.java).apply {
+                        flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    }) },
+                    onManageCategories = { startActivity(Intent(this, CategoryListActivity::class.java).apply {
+                        flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    }) },
                     onManageLessons = {
-                        // Quay lại màn hình danh sách
                         startActivity(Intent(this, LessonListActivity::class.java).apply {
                             flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
                         })
@@ -74,17 +98,9 @@ class LessonDetailActivity : ComponentActivity() {
                         categories = categories,
                         onUpdate = { updatedLesson ->
                             lessonViewModel.updateLesson(updatedLesson)
-                            showToast("Lesson updated successfully!")
-                            finish() // Quay lại màn hình trước đó
                         },
-                        onDelete = { lessonToDelete ->
-                            lessonViewModel.deleteLesson(lessonToDelete)
-                            showToast("Lesson deleted.")
-                            finish() // Quay lại màn hình danh sách
-                        },
-                        onBack = { finish() }, // Đơn giản là đóng activity hiện tại
+                        onBack = { finish() },
                         onNavigateToQuestions = { lessonId ->
-                            // [THAY ĐỔI Ở ĐÂY]
                             val intent = Intent(this, QuestionListActivity::class.java).apply {
                                 putExtra("LESSON_ID", lessonId)
                             }

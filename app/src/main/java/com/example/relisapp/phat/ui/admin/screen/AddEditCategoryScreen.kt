@@ -18,15 +18,12 @@ import com.example.relisapp.phat.entity.Categories
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddEditCategoryScreen(
-    // Category để chỉnh sửa, null nếu là thêm mới
     existingCategory: Categories?,
     onSave: (Categories) -> Unit,
-    onDelete: ((Categories) -> Unit)? = null, // Hàm xóa, chỉ hiển thị nút xóa khi được cung cấp
     onBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    // --- CÁC STATE CỦA UI ---
-    // Khởi tạo các state này với giá trị rỗng hoặc mặc định ban đầu.
+
     var categoryName by remember { mutableStateOf("") }
     var selectedType by remember { mutableStateOf("Listening") }
     var expanded by remember { mutableStateOf(false) }
@@ -35,21 +32,13 @@ fun AddEditCategoryScreen(
     val context = LocalContext.current
     val isEditing = existingCategory != null
 
-    // --- [SỬA ĐỔI QUAN TRỌNG] ---
-    // Sử dụng LaunchedEffect để "lắng nghe" sự thay đổi của `existingCategory`.
-    // Khi `existingCategory` thay đổi từ `null` sang có dữ liệu (sau khi ViewModel tải xong),
-    // khối lệnh này sẽ được thực thi để cập nhật state của UI.
     LaunchedEffect(existingCategory) {
         if (existingCategory != null) {
             categoryName = existingCategory.categoryName
-            // Chuyển chữ cái đầu của type thành chữ hoa để khớp với danh sách dropdown
             selectedType = existingCategory.type.capitalize(Locale.current)
         }
     }
 
-    // --- GIAO DIỆN ---
-    // Giao diện bên dưới không cần thay đổi. Nó sẽ tự động "recompose" (vẽ lại)
-    // khi các state `categoryName` và `selectedType` được cập nhật từ LaunchedEffect.
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -109,16 +98,6 @@ fun AddEditCategoryScreen(
             Text(if (isEditing) "Update Category" else "Save Category")
         }
 
-        // Chỉ hiển thị nút Xóa nếu đang ở chế độ chỉnh sửa và có hàm onDelete
-        if (isEditing && onDelete != null) {
-            Button(
-                onClick = { onDelete(existingCategory!!) },
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("Delete Category")
-            }
-        }
 
         OutlinedButton(
             onClick = onBack,

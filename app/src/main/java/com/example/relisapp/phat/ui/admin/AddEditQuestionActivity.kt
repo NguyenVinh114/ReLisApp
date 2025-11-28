@@ -4,6 +4,7 @@ package com.example.relisapp.phat.ui.admin
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,6 +12,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.error
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.relisapp.nam.ui.screens.ProfileActivity
 import com.example.relisapp.phat.data.AppDatabase
@@ -20,6 +22,8 @@ import com.example.relisapp.phat.ui.admin.screen.BaseAdminScreen
 import com.example.relisapp.phat.ui.theme.AdminProTheme
 import com.example.relisapp.phat.viewmodel.QuestionViewModel
 import com.example.relisapp.phat.viewmodel.QuestionViewModelFactory
+import com.example.relisapp.phat.viewmodel.SaveResult
+import kotlinx.coroutines.flow.collectLatest
 
 class AddEditQuestionActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,6 +52,24 @@ class AddEditQuestionActivity : ComponentActivity() {
                     }
                 }
 
+                LaunchedEffect(Unit) {
+                    questionViewModel.saveResult.collectLatest { result ->
+                        when (result) {
+                            is SaveResult.Success -> {
+                                Toast.makeText(this@AddEditQuestionActivity, "Question saved!", Toast.LENGTH_SHORT).show()
+                                finish()
+                            }
+                            is SaveResult.Existed -> {
+                                Toast.makeText(this@AddEditQuestionActivity, result.message, Toast.LENGTH_LONG).show()
+                            }
+                            is SaveResult.Failure -> {
+                                Toast.makeText(this@AddEditQuestionActivity, "An unexpected error occurred: ${result.error.message}", Toast.LENGTH_LONG).show()
+                                // Ở lại màn hình
+                            }
+                        }
+                    }
+                }
+
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
@@ -55,9 +77,17 @@ class AddEditQuestionActivity : ComponentActivity() {
                     BaseAdminScreen(
                         // Thay đổi tiêu đề tùy theo chế độ
                         title = if (isEditMode) "Edit Question" else "Add New Question",
-                        onDashboard = { /* TODO */ },
-                        onManageCategories = { /* TODO */ },
-                        onManageLessons = { /* TODO */ },
+                        onDashboard = { startActivity(Intent(this, AdminDashboardActivity::class.java).apply {
+                            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        }) },
+                        onManageCategories = { startActivity(Intent(this, CategoryListActivity::class.java).apply {
+                            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        }) },
+                        onManageLessons = {
+                            startActivity(Intent(this, LessonListActivity::class.java).apply {
+                                flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                            })
+                        },
                         onManageUsers = { /* TODO */ },
                         onFeedback = { /* TODO */ },
                         onLogout = { /* TODO */ },
